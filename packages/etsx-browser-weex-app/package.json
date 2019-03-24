@@ -1,0 +1,26 @@
+{
+  "name": "@etsx/browser-weex-app",
+  "version": "0.0.1",
+  "description": "etsx-browser-weex-app",
+  "main": "index.js",
+  "typings": "types/index.d.ts",
+  "license": "ISC",
+  "files": [
+    "src",
+    "template",
+    "types/*.d.ts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/easyke/etsx.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/easyke/etsx/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/easyke/etsx#readme",
+  "gitHead": "5e5a8faf5178c3362f3f67f6a31f7884ad41a0cc"
+}
