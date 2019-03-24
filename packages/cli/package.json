@@ -9,6 +9,7 @@
   "bugs": "https://github.com/zeit/etsx.js/issues",
   "homepage": "https://etsx.easyke.top",
   "files": [
+    "bin",
     "dist",
     "index.d.ts",
     "src/*.ts"
