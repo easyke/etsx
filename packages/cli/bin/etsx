@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+'use strict'
+const { logger } = require('@etsx/utils')
+require('../dist').launch().then(() => logger.stop(), (...agrs) => logger.fatal(...agrs))
