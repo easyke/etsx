@@ -1,6 +1,6 @@
 {
   "name": "@etsx/bundler-ios",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "etsx bundler ios",
   "main": "./dist/index.js",
   "types": "./index.d.js",
