@@ -56,10 +56,10 @@
     "typescript": "*"
   },
   "devDependencies": {
-    "@taskr/clear": "1.1.0",
-    "@taskr/esnext": "1.1.0",
-    "@taskr/watch": "1.1.0",
-    "taskr": "1.1.0"
+    "@taskr/clear": "^1.1.0",
+    "@taskr/esnext": "^1.1.0",
+    "@taskr/watch": "^1.1.0",
+    "taskr": "^1.1.0"
   },
   "publishConfig": {
     "access": "public"
