@@ -1,14 +1,16 @@
 {
   "name": "@etsx/browser-weex-app",
   "version": "0.0.1",
-  "description": "etsx-browser-weex-app",
+  "description": "etsx browser-weex-app",
   "main": "index.js",
   "typings": "types/index.d.ts",
   "license": "ISC",
   "files": [
     "src",
+    "dist",
     "template",
-    "types/*.d.ts"
+    "index.js",
+    "types"
   ],
   "repository": {
     "type": "git",

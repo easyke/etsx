@@ -9,13 +9,10 @@
   "bugs": "https://github.com/easyke/etsx.js/issues",
   "homepage": "https://etsx.easyke.top",
   "files": [
+    "src",
     "dist",
-    "dist/*.js",
-    "dist/logger/*.js",
-    "dist/logger/table/*.js",
-    "dist/index.js",
-    "index.d.ts",
-    "src/*.ts"
+    "types",
+    "index.d.ts"
   ],
   "scripts": {
     "build": "taskr",

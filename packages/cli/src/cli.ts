@@ -11,8 +11,8 @@ import { device as iosDevice } from '@etsx/bundler-ios';
 import { bundler as androidBundler } from '@etsx/bundler-android';
 import inquirer from 'inquirer';
 
-const etsx = Symbol('etsx')
-const listener = Symbol('listener')
+export const etsx = Symbol('etsx')
+export const listener = Symbol('listener')
 
 export type port = number;
 type build =

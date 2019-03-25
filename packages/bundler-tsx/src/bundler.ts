@@ -7,7 +7,10 @@ export class Bundler extends BuildModule {
   }
   async build() {
 
-  }
+  };
+  async unwatch() {
+
+  };
 }
 
 export default Bundler

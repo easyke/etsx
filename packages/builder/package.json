@@ -9,11 +9,11 @@
   "bugs": "https://github.com/easyke/etsx.js/issues",
   "homepage": "https://etsx.easyke.top",
   "files": [
+    "src",
     "dist",
-    "index.d.ts",
-    "src/*.ts"
+    "types",
+    "index.d.ts"
   ],
-  "bin": {},
   "scripts": {
     "build": "taskr",
     "release": "taskr release",
@@ -27,26 +27,31 @@
     ]
   },
   "dependencies": {
-    "@etsx/bundler-android": "0.0.1",
-    "@etsx/bundler-ios": "0.0.1",
-    "@etsx/bundler-tsx": "0.0.1",
-    "@etsx/utils": "0.0.1",
+    "@etsx/bundler-android": "^0.0.1",
+    "@etsx/bundler-ios": "^0.0.1",
+    "@etsx/bundler-tsx": "^0.0.1",
+    "@etsx/utils": "^0.0.1",
+    "@types/glob": "^7.1.1",
+    "@types/webpack-dev-middleware": "^2.0.2",
+    "@types/webpack-hot-middleware": "^2.16.5",
+    "chokidar": "^2.1.5",
     "glob": "^7.1.3",
-    "inquirer": "6.2.2",
-    "ip": "1.1.5",
-    "jest": "^23.6.0",
-    "json-loader": "^0.5.7",
-    "npm-which": "3.0.1"
+    "graceful-fs": "^4.1.15",
+    "memory-fs": "^0.4.1",
+    "upath": "^1.1.2",
+    "webpack-dev-middleware": "^3.6.1",
+    "webpack-hot-middleware": "^2.24.3"
   },
   "peerDependencies": {
     "etsx": ">=0.0.1",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "typescript": "*"
   },
   "devDependencies": {
-    "@taskr/clear": "1.1.0",
-    "@taskr/esnext": "1.1.0",
-    "@taskr/watch": "1.1.0",
-    "taskr": "1.1.0"
+    "@taskr/clear": "^1.1.0",
+    "@taskr/esnext": "^1.1.0",
+    "@taskr/watch": "^1.1.0",
+    "taskr": "^1.1.0"
   },
   "publishConfig": {
     "access": "public"

@@ -9,11 +9,11 @@
   "bugs": "https://github.com/easyke/etsx.js/issues",
   "homepage": "https://etsx.easyke.top",
   "files": [
+    "src",
     "dist",
-    "index.d.ts",
-    "src/*.ts"
+    "types",
+    "index.d.ts"
   ],
-  "bin": {},
   "scripts": {
     "build": "taskr",
     "release": "taskr release",
@@ -27,18 +27,20 @@
     ]
   },
   "dependencies": {
-    "@etsx/utils": "0.0.1",
+    "@etsx/utils": "^0.0.1",
     "appium-adb": "^7.6.1"
   },
   "peerDependencies": {
     "etsx": ">=0.0.1",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "@etsx/builder": "^0.0.1",
+    "typescript": "*"
   },
   "devDependencies": {
-    "@taskr/clear": "1.1.0",
-    "@taskr/esnext": "1.1.0",
-    "@taskr/watch": "1.1.0",
-    "taskr": "1.1.0"
+    "@taskr/clear": "^1.1.0",
+    "@taskr/esnext": "^1.1.0",
+    "@taskr/watch": "^1.1.0",
+    "taskr": "^1.1.0"
   },
   "publishConfig": {
     "access": "public"

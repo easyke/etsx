@@ -9,9 +9,10 @@
   "bugs": "https://github.com/easyke/etsx.js/issues",
   "homepage": "https://etsx.easyke.top",
   "files": [
+    "src",
     "dist",
-    "index.d.ts",
-    "src/*.ts"
+    "types",
+    "index.d.ts"
   ],
   "scripts": {
     "build": "taskr",
@@ -27,18 +28,16 @@
   },
   "typings": "./index.d.ts",
   "dependencies": {
-    "@etsx/utils": "0.0.1",
-    "@types/ws": "^6.0.1",
-    "finalhandler": "^1.1.1",
-    "parseurl": "1.3.2",
-    "ws": "^6.2.0"
+    "@etsx/utils": "^0.0.1"
+  },
+  "peerDependencies": {
+    "typescript": "*"
   },
   "devDependencies": {
     "@taskr/clear": "1.1.0",
     "@taskr/esnext": "1.1.0",
     "@taskr/watch": "1.1.0",
-    "taskr": "1.1.0",
-    "typescript": "3.3.3333"
+    "taskr": "1.1.0"
   },
   "publishConfig": {
     "access": "public"

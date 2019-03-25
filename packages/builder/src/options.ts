@@ -4,9 +4,9 @@ import chokidar, { FSWatcher, WatchOptions } from 'chokidar';
 import MFS from 'memory-fs';
 import fs from 'graceful-fs';
 import { cachedFileSystem } from '@etsx/fs';
-import { proxy } from '@etsx/utils'
-import WebpackDevMiddleware from 'webpack-dev-middleware'
-import WebpackHotMiddleware from 'webpack-hot-middleware'
+import { proxy } from '@etsx/utils';
+import WebpackDevMiddleware from 'webpack-dev-middleware';
+import WebpackHotMiddleware from 'webpack-hot-middleware';
 
 const NodeWatchFileSystem = require('webpack/lib/node/NodeWatchFileSystem')
 

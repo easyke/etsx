@@ -1,8 +1,8 @@
 import path from 'path';
+import crypto from 'crypto';
 import invert from 'lodash/invert';
 import template from 'lodash/template';
 import { sleep, logger, devalue } from '@etsx/utils';
-const crypto = require('crypto')
 // const fs = require('fs-extra')
 // const { createBundleRenderer } = require('vue-server-renderer')
 

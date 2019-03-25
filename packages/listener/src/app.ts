@@ -4,9 +4,10 @@ import http2 from 'http2'
 import WebSocket from 'ws'
 import { Listener, Request, Response, RequestListener, WebSocketListener, next, options as ListenOptions } from './listener'
 import { deferRun, logger } from '@etsx/utils'
+import parseUrl from 'parseurl';
 
-const parseUrl = require('parseurl')
 const finalhandler = require('finalhandler')
+
 const app = Symbol('app')
 export type ApplicationOptions = {}
 export type listen = (options: ListenOptions) => Listener
