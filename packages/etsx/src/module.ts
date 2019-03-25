@@ -3,26 +3,64 @@ import fs from 'fs';
 import path from 'path';
 import Etsx from 'etsx';
 import { chainFn, sequence } from '@etsx/utils';
+import { server } from '@etsx/server';
 import EtsxModule from './base-module';
+import { TemplateOptions } from 'lodash'
 
 const hash: (src: any) => string = require('hash-sum')
 
 export type dst = string
-export type template = string | {
-  src: string,
-  fileName: string,
-  options: object,
-}
+
 export type dstemplate = {
   src: string,
   dst: dst,
   options: object,
 }
+
 export type moduleOpts = {}
-export type moduleHandler = () => void
-export type module = { src: string, options: moduleOpts, handler: moduleHandler }
+export type moduleObject = {
+  src: string;
+  options?: moduleOpts;
+  handler: {
+    (...args: any[]): any;
+    meta: {
+      name: string;
+    };
+  };
+}
+export type pluginObject = {
+  /**
+   * 文件的路径
+   */
+  src: string;
+  /**
+   * 如果值为 false，该文件只会在客户端被打包引入。
+   * undefined 和 true 同样的效果
+   * 默认为 true
+   */
+  ssr?: boolean;
+}
+export type templateObject = {
+  /**
+   * 文件的路径
+   */
+  src: string,
+  /**
+   * 文件名称
+   */
+  fileName?: string,
+  /**
+   * lodash.template
+   */
+  options?: TemplateOptions,
+}
+
+export type module = string | moduleObject
+export type plugin = string | pluginObject
+export type template = string | templateObject
+
 export class ModuleContainer extends EtsxModule {
-  requiredModules: Map<string, module>;
+  requiredModules: Map<string, moduleObject>;
   /**
    * 构造函数
    * @param {Object} etsx
@@ -73,13 +111,16 @@ export class ModuleContainer extends EtsxModule {
     this.options.build.templates.push(templateObj)
     return templateObj
   }
-
-  addPlugin(template: template) {
+  /**
+   * 添加插件
+   * @param template
+   */
+  addPlugin(template: templateObject & pluginObject) {
     const { dst } = this.addTemplate(template)
 
     // Add to etsx plugins
     this.options.plugins.unshift({
-      src: path.join(this.options.buildDir, dst),
+      src: path.join(this.options.dir.build, dst),
       ssr: template.ssr,
     })
   }
@@ -97,20 +138,18 @@ export class ModuleContainer extends EtsxModule {
   }
 
   addErrorLayout(dst: dst) {
-    const relativeBuildDir = path.relative(this.options.rootDir, this.options.buildDir)
-    this.options.ErrorPage = `~/${relativeBuildDir}/${dst}`
+    this.options.ErrorPage = `~/${path.relative(this.options.dir.build, dst)}`
   }
 
   /**
    * 添加中间件
    * @param {Function} middleware
    */
-  addServerMiddleware(middleware) {
+  addServerMiddleware(middleware: server.serverMiddleware) {
     this.options.serverMiddleware.push(middleware)
   }
-
-  extendBuild(fn) {
-    this.options.build.extend = chainFn(this.options.build.extend, fn)
+  extendBuild(fn: (...args: any[]) => any) {
+    (this.options as any).build.extend = chainFn((this.options as any).build.extend, fn)
   }
 
   extendRoutes(fn) {
@@ -119,40 +158,39 @@ export class ModuleContainer extends EtsxModule {
       fn,
     )
   }
-/**
- * 一次性引入模块
- * @param {String|Object|Array} moduleOpts
- */
-  requireModule(moduleOpts: moduleOpts) {
-    return this.addModule(moduleOpts, true /* require once */)
+  /**
+   * 一次性引入模块
+   */
+  requireModule(input: module | string | [string, moduleOpts]) {
+    return this.addModule(input, true /* require once */)
   }
 
   /**
    * 添加模块
-   * @param {String|Object|Array} moduleOpts
-   * @param {Boolean} requireOnce
+   * @param moduleOpts 参数
+   * @param requireOnce 一次性引入模块
    */
-  addModule(moduleOpts: moduleOpts, requireOnce: boolean = false) {
-    let src
-    let options
-    let handler
+  async addModule(moduleOpts: module | [string, moduleOpts], requireOnce: boolean = false): Promise<void> {
+    let src: string = ''
+    let options: moduleOpts | undefined = {}
+    let handler: moduleObject['handler'] | undefined = void 0
 
     // Type 1: String
     if (typeof moduleOpts === 'string') {
       src = moduleOpts
+    } else if (typeof moduleOpts === 'function') {
+      // Define handler if moduleOpts is a function
+      handler = moduleOpts
     } else if (Array.isArray(moduleOpts)) {
       // Type 2: Babel style array
-      src = moduleOpts[0]
-      options = moduleOpts[1]
+      [src, options] = moduleOpts
     } else if (typeof moduleOpts === 'object') {
       // Type 3: Pure object
-      src = moduleOpts.src
-      options = moduleOpts.options
-      handler = moduleOpts.handler
+      ({ src, options, handler } = moduleOpts)
     }
 
     // 解析处理程序 - 引入处理程序[必须是一个方法]
-    if (!handler) {
+    if (!handler && src) {
       handler = this.etsx.resolver.requireModule(src)
     }
 
@@ -177,30 +215,11 @@ export class ModuleContainer extends EtsxModule {
     }
 
     // 如果 配置选项为 undefined，将使用 空对象 作为配置选项
-    if (options === undefined) {
+    if (options === void 0) {
       options = {}
     }
-
-    return new Promise((resolve, reject) => {
-      // 使用`this`上下文调用模块并传递选项
-      const result = handler.call(this, options)
-
-      // 如果模块发回一个 承诺[Promise]
-      if (result && result.then) {
-        // 等待承诺的提交
-        return resolve(resolve, reject)
-      }
-
-      // 提交实现了承诺
-      return resolve()
-    })
-  }
-  get options() {
-    if (this.etsx && this.etsx.options) {
-      return this.etsx.options
-    } else {
-      throw new Error('etsx.options error')
-    }
+    // 使用`this`上下文调用模块并传递选项
+    return await handler.call(this, options)
   }
 }
 export default ModuleContainer

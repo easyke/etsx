@@ -1,9 +1,8 @@
 import EtsxCommon from './common'
 import { getOptions, defaultsDeepClone } from '@etsx/utils'
+import { moduleContainer } from 'etsx'
 
 type css = string
-type module = string
-type plugin = string
 export abstract class EtsxApp extends EtsxCommon {
   // vue 配置
   vue: {
@@ -16,9 +15,9 @@ export abstract class EtsxApp extends EtsxCommon {
   react: {
   };
   // 模块
-  modules: module[];
+  modules: moduleContainer.module[];
   // 插件
-  plugins: plugin[];
+  plugins: moduleContainer.plugin[];
   // 样式
   css: css[];
   constructor(options: getOptions<EtsxApp> = {}) {

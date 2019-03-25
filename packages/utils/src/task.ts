@@ -9,25 +9,25 @@ export const sequence = <T extends any, R extends any>(tasks: T[], fn: (task: T)
 export const parallel = <T extends any, R extends any>(tasks: T[], fn: (task: T) => R | Promise<R>): Promise<R[]> => {
   return Promise.all(tasks.map(fn))
 }
-
-export const chainFn = (base: any, fn: any) => {
+type onFn = null | void | string | number | object | Array<null | void | string | number | object>;
+export const chainFn = <B extends onFn, BR extends any, FR extends any>(base: B | ((...args: any[]) => BR), fn: (...args: any[]) => FR): B | ((...args: any[]) => (BR | FR)) => {
   /* istanbul ignore if */
   if (typeof fn !== 'function') {
     return base
   }
-  return function(this: any): any {
+  return function(this: any, ...args): BR | FR {
     if (typeof base !== 'function') {
-      return fn.apply(this, arguments as IArguments)
+      return fn.apply(this, args)
     }
-    let baseResult = base.apply(this, arguments as IArguments)
+    let baseResult = base.apply(this, args)
     // Allow function to mutate the first argument instead of returning the result
     if (baseResult === undefined) {
-      baseResult = arguments[0]
+      [baseResult] = args
     }
     const fnResult = fn.call(
       this,
       baseResult,
-      ...Array.prototype.slice.call(arguments as IArguments, 1),
+      ...Array.prototype.slice.call(args, 1),
     )
     // Return mutated argument if no result was returned
     if (fnResult === undefined) {
