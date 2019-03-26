@@ -1,4 +1,3 @@
-import { moduleContainer } from 'etsx'
 import { stdEnv as env, defaultsDeepClone, getOptions } from '@etsx/utils'
 import chokidar, { FSWatcher, WatchOptions } from 'chokidar';
 import MFS from 'memory-fs';
@@ -7,12 +6,11 @@ import { cachedFileSystem } from '@etsx/fs';
 import { proxy } from '@etsx/utils';
 import WebpackDevMiddleware from 'webpack-dev-middleware';
 import WebpackHotMiddleware from 'webpack-hot-middleware';
+import webpack from 'webpack';
 
 const NodeWatchFileSystem = require('webpack/lib/node/NodeWatchFileSystem')
 
-export type template = moduleContainer.dstemplate
 export type watch = string
-export type plugin = {}
 export type buildEnv = {
   /**
    * 调试模式
@@ -40,18 +38,6 @@ export type getFilenames = string | ((env: buildEnv) => string)
  * 小程序构建配置项
  */
 export type MiniProgram = {
-  /**
-   * 微信小程序
-   */
-  wechat: WechatMiniProgram,
-  /**
-   * 百度小程序
-   */
-  baidu: BaiduMiniProgram,
-  /**
-   * 支付宝小程序
-   */
-  alipay: AlipayMiniProgram;
 };
 /**
  * weex构建配置项
@@ -75,21 +61,17 @@ export type Weex = {
    * 类型: Array<String>
    */
   watch: watch[];
+  watchers: {
+  };
   /**
    * 插件
    */
-  plugins: plugin[];
+  plugins: webpack.Plugin[];
   /**
    * 请查看 webpack-dev-middleware 了解更多可用选项。
    * 类型: Object
    */
-  devMiddleware: {};
-  /**
-   * etsx-app weex模板，一般和浏览器的模板一致
-   * 默认: @etsx/browser-weex-app
-   */
-  template?: string;
-  templates: template[];
+  devMiddleware: WebpackDevMiddleware.Options;
 };
 /**
  * 浏览器 构建配置项
@@ -104,7 +86,6 @@ export type Browser = {
    */
   watch: watch[];
   watchers: {
-    webpack: {};
   };
   /**
    * 自定义打包文件名
@@ -123,7 +104,7 @@ export type Browser = {
     video: getFilenames;
   };
   styleResources: {};
-  plugins: plugin[];
+  plugins: webpack.Plugin[];
   /**
    * 用于压缩在构建打包过程中创建的HTML文件配置html-minifier的插件（将应用于所有模式）。
    * 类型: Object
@@ -142,12 +123,6 @@ export type Browser = {
    * 类型: Object
    */
   hotMiddleware: WebpackHotMiddleware.Options;
-  /**
-   * etsx-app 浏览器模板，一般和weex的模板一致
-   * 默认: @etsx/browser-weex-app
-   */
-  template?: string;
-  templates: template[];
   loaders: {
     /**
      * file-loader#options
@@ -175,65 +150,6 @@ export type Browser = {
     scss: {};
     stylus: {};
   };
-};
-
-export type WechatMiniProgram = {
-  /**
-   * 默认启用
-   */
-  enable: boolean;
-  /**
-   * 您可以使用watch来监听文件更改。
-   * 此功能特别适用用在modules中。
-   * 类型: Array<String>
-   */
-  watch: watch[];
-  /**
-   * 插件
-   */
-  plugins: plugin[];
-};
-
-export type BaiduMiniProgram = {
-  /**
-   * 默认启用
-   */
-  enable: boolean;
-  /**
-   * 您可以使用watch来监听文件更改。
-   * 此功能特别适用用在modules中。
-   * 类型: Array<String>
-   */
-  watch: watch[];
-  /**
-   * 插件
-   */
-  plugins: plugin[];
-};
-export type AlipayMiniProgram = {
-  /**
-   * 默认启用
-   */
-  enable: boolean;
-  /**
-   * 您可以使用watch来监听文件更改。
-   * 此功能特别适用用在modules中。
-   * 类型: Array<String>
-   */
-  watch: watch[];
-  /**
-   * 插件
-   */
-  plugins: plugin[];
-};
-
-export type stats = {
-  /**
-   * 将资源显示在 stats 中的情况排除，
-   * 这可以通过 String, RegExp, 获取 assetName 的函数来实现，
-   * 并返回一个布尔值或如下所述的数组。
-   */
-  excludeAssets: string[] | RegExp[],
 };
 
 export class BuildOptions {
@@ -291,10 +207,6 @@ export class BuildOptions {
    */
   browser: Browser;
   /**
-   * 小程序配置
-   */
-  miniProgram: MiniProgram;
-  /**
    * 您可以使用watch来监听文件更改。
    * 此功能特别适用用在modules中。
    * 类型: Array<String>
@@ -311,7 +223,7 @@ export class BuildOptions {
    * 只是想要获取某部分 bundle 的信息，
    * 使用 stats 选项是比较好的折衷方式。
    */
-  stats: stats;
+  stats: webpack.Options.Stats;
   /**
    * 临时用的内存文件系统
    */
@@ -407,17 +319,16 @@ export class BuildOptions {
       iosAppId: 'etsx.app.easycms.site',
       androidAppId: 'etsx.app.easycms.site',
       watch: [],
+      watchers: {
+      },
       plugins: [],
-      devMiddleware: {},
-      template: undefined,
-      templates: [],
+      devMiddleware: ({} as WebpackDevMiddleware.Options),
     })
     // 浏览器构建配置
     this.browser = defaultsDeepClone<Browser>(options.browser, {
       enable: true,
       watch: [],
       watchers: {
-        webpack: {},
       },
       filenames: {
         app: ({ isDev, isModern }) => isDev ? `${isModern ? 'modern-' : ''}[name].js` : '[chunkhash].js',
@@ -477,8 +388,6 @@ export class BuildOptions {
       },
       devMiddleware: ({} as WebpackDevMiddleware.Options),
       hotMiddleware: {},
-      template: undefined,
-      templates: [],
       loaders: {
         file: {},
         fontUrl: { limit: 1000 },
@@ -496,24 +405,7 @@ export class BuildOptions {
       },
     })
 
-    this.miniProgram = defaultsDeepClone<MiniProgram>(options.miniProgram, {
-      wechat: {
-        enable: true,
-        watch: [],
-        plugins: [],
-      },
-      baidu: {
-        enable: true,
-        watch: [],
-        plugins: [],
-      },
-      alipay: {
-        enable: true,
-        watch: [],
-        plugins: [],
-      },
-    })
-    this.stats = defaultsDeepClone<stats>(options.stats, {
+    this.stats = defaultsDeepClone<webpack.Options.Stats>(options.stats, {
       /**
        * 将资源显示在 stats 中的情况排除，
        * 这可以通过 String, RegExp, 获取 assetName 的函数来实现，

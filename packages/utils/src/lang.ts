@@ -1,21 +1,14 @@
-export function encodeHtml(str: string): string {
-  return str.replace(/</g, '&lt;').replace(/>/g, '&gt;')
-}
+export const encodeHtml = (str: string) => str.replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-export function isString(obj: string | any): boolean {
-  return Boolean(typeof obj === 'string' || obj instanceof String)
-}
-export function isNonEmptyString(obj: string | any): boolean {
-  return Boolean(obj && isString(obj))
-}
+export const isString = (obj: any) => Boolean(typeof obj === 'string' || obj instanceof String)
 
-export function isPureObject(o: object | any): boolean {
-  return !Array.isArray(o) && typeof o === 'object'
-}
+export const isEmpty = (v: any) => v === undefined || v === null
 
-export function isUrl(url: string): boolean {
-  return ['http', '//'].some((str: string) => url.startsWith(str))
-}
+export const isNonEmptyString = (obj: any) => Boolean(obj && isString(obj))
+
+export const isPureObject = (o: any) => !Array.isArray(o) && typeof o === 'object'
+
+export const isUrl = (url: string) => ['http', '//'].some((str: string) => url.startsWith(str))
 
 export function urlJoin(): string {
   return [].slice
@@ -31,9 +24,7 @@ export function urlJoin(): string {
  * @param  {any} value
  * @return {array}
  */
-export function wrapArray<A>(value: A[] | A): A[] {
-  return Array.isArray(value) ? value : [value]
-}
+export const wrapArray = <A extends any>(value: A[] | A): A[] => Array.isArray(value) ? value : [value]
 
 const WHITESPACE_REPLACEMENTS = [
   [/[ \t\f\r]+\n/g, '\n'], // strip empty indents

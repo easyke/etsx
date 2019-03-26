@@ -17,7 +17,10 @@ const devMiddleware = Symbol('devMiddleware')
 const hotMiddleware = Symbol('hotMiddleware')
 export type serverEtsxMiddleware = application.useAppHandler & { prefix?: boolean; };
 export type serverMiddleware = string | application.useAppListener | serverEtsxMiddleware;
-type MiddlewarePromise = (req: any, res: any) => Promise<void>
+type MiddlewarePromise = {
+  (req: any, res: any): Promise<void>;
+  close?: () => Promise<void>;
+}
 type MiddlewareMap = Map<string, MiddlewarePromise>;
 export class Server extends EtsxModule {
   globals: { [key: string]: string };

@@ -13,7 +13,7 @@ export function getContext<Q extends any, S extends any>(req: Q, res: S): { req:
   return { req, res }
 }
 export const determineGlobals = function determineGlobals(globalName: string = 'etsx', globals: globals) {
-  const _globals: { [key: string]: string } = {}
+  const _globals: { [key in keyof globals]?: string } = {}
   Object.keys(globals).forEach((global) => {
     const item = globals[global]
     if (typeof item === 'function') {
@@ -22,5 +22,5 @@ export const determineGlobals = function determineGlobals(globalName: string = '
       _globals[global] = (globals[global] as string)
     }
   })
-  return _globals
+  return _globals as { [key in keyof globals]: string }
 }

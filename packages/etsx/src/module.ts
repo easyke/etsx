@@ -2,7 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import Etsx from 'etsx';
-import { chainFn, sequence } from '@etsx/utils';
+import { logger, chainFn, sequence } from '@etsx/utils';
 import { server } from '@etsx/server';
 import EtsxModule from './base-module';
 import { TemplateOptions } from 'lodash'
@@ -30,29 +30,32 @@ export type moduleObject = {
 }
 export type pluginObject = {
   /**
-   * 文件的路径
+   * src 可以传入js文件路径，
+   * 然后，每个端可以独立js
+   * 如果 ssr、web、wap、ios、android 其中一个值为 false，
+   * 该终端将不引入的插件，不会被打包，也不会占用任何打包空间，默认为true
    */
+  name?: string;
   src: string;
-  /**
-   * 如果值为 false，该文件只会在客户端被打包引入。
-   * undefined 和 true 同样的效果
-   * 默认为 true
-   */
   ssr?: boolean;
+  web?: boolean;
+  wap?: boolean;
+  ios?: boolean;
+  android?: boolean;
 }
 export type templateObject = {
   /**
    * 文件的路径
    */
-  src: string,
+  src: string;
   /**
    * 文件名称
    */
-  fileName?: string,
+  fileName?: string;
   /**
    * lodash.template
    */
-  options?: TemplateOptions,
+  options?: TemplateOptions;
 }
 
 export type module = string | moduleObject
@@ -108,7 +111,7 @@ export class ModuleContainer extends EtsxModule {
       options: (typeof template === 'object' ? template.options : {}) || {},
     }
 
-    this.options.build.templates.push(templateObj)
+    this.options.templates.push(templateObj)
     return templateObj
   }
   /**
@@ -117,19 +120,28 @@ export class ModuleContainer extends EtsxModule {
    */
   addPlugin(template: templateObject & pluginObject) {
     const { dst } = this.addTemplate(template)
-
     // Add to etsx plugins
     this.options.plugins.unshift({
       src: path.join(this.options.dir.build, dst),
-      ssr: template.ssr,
+      ssr: typeof template.ssr === 'undefined' ? true : template.ssr,
+      web: typeof template.web === 'undefined' ? true : template.web,
+      wap: typeof template.wap === 'undefined' ? true : template.wap,
+      ios: typeof template.ios === 'undefined' ? true : template.ios,
+      android: typeof template.android === 'undefined' ? true : template.android,
     })
   }
 
-  addLayout(template: template, name: string) {
+  addLayout(template: template, name?: string) {
     const { dst, src } = this.addTemplate(template)
+    const layoutName = name || path.parse(src).name
+    const layout = this.options.layouts[layoutName]
+
+    if (layout) {
+      logger.warn(`Duplicate layout registration, "${layoutName}" has been registered as "${layout}"`)
+    }
 
     // Add to nuxt layouts
-    this.options.layouts[name || path.parse(src).name] = `./${dst}`
+    this.options.layouts[layoutName] = `./${dst}`
 
     // If error layout, set ErrorPage
     if (name === 'error') {
