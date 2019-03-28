@@ -6,17 +6,13 @@ export type dist = {
    */
   root: string;
   /**
-   * 微信小程序的导出
+   * ios的导出
    */
-  wechat: string;
+  ios: string;
   /**
-   * 支付宝小程序的导出
+   * android的导出
    */
-  alipay: string;
-  /**
-   * 百度小程序的导出
-   */
-  baidu: string;
+  android: string;
   /**
    * weex的导出
    */
@@ -31,15 +27,13 @@ export function dist(options: getOptions<dist>, root: string): dist {
   const dist = defaultsDeepClone<dist>(options, {
     // 导出根目录
     root: path.resolve(root, 'dist'),
-    wechat: 'wechat',
-    alipay: 'alipay',
-    baidu: 'baidu',
+    ios: 'ios',
+    android: 'android',
     weex: 'weex',
     browser: 'browser',
   })
-  dist.wechat = path.resolve(dist.root, dist.wechat)
-  dist.alipay = path.resolve(dist.root, dist.alipay)
-  dist.baidu = path.resolve(dist.root, dist.baidu)
+  dist.ios = path.resolve(dist.root, dist.ios)
+  dist.android = path.resolve(dist.root, dist.android)
   dist.weex = path.resolve(dist.root, dist.weex)
   dist.browser = path.resolve(dist.root, dist.browser)
   return dist

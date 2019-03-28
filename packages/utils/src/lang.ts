@@ -10,13 +10,11 @@ export const isPureObject = (o: any) => !Array.isArray(o) && typeof o === 'objec
 
 export const isUrl = (url: string) => ['http', '//'].some((str: string) => url.startsWith(str))
 
-export function urlJoin(): string {
-  return [].slice
-    .call(arguments)
-    .join('/')
-    .replace(/\/+/g, '/')
-    .replace(':/', '://')
-}
+export const urlJoin = (...args: string[]): string => [].slice
+  .call(args)
+  .join('/')
+  .replace(/\/+/g, '/')
+  .replace(':/', '://')
 
 /**
  * Wraps value in array if it is not already an array

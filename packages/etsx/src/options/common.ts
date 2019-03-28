@@ -34,7 +34,7 @@ export abstract class EtsxCommon {
   /**
    * 调试模式
    */
-  debug: boolean | string;
+  debug: boolean;
   /**
    * 全局名字
    */

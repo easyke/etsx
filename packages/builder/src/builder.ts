@@ -375,7 +375,7 @@ export class Builder extends BuildModule {
     this.plugins = Array.from(this.normalizePlugins())
 
     // -- Templates --
-    let templatesFiles = Array.from(this.template.files)
+    const templatesFiles = Array.from(this.template.files)
 
     const templateVars = {
       options: this.options,
@@ -416,120 +416,126 @@ export class Builder extends BuildModule {
       },
     }
 
-    // -- Layouts --
-    if (fsExtra.existsSync(path.resolve(this.options.srcDir, this.options.dir.layouts))) {
-      const configLayouts = this.options.layouts
-      const layoutsFiles = await glob(`${this.options.dir.layouts}/**/*.{${this.supportedExtensions.join(',')}}`, {
-        cwd: this.options.srcDir,
-        ignore: this.options.ignore,
-      })
-      layoutsFiles.forEach((file) => {
-        const name = file
-          .replace(new RegExp(`^${this.options.dir.layouts}/`), '')
-          .replace(new RegExp(`\\.(${this.supportedExtensions.join('|')})$`), '')
-        if (name === 'error') {
-          if (!templateVars.components.ErrorPage) {
-            templateVars.components.ErrorPage = this.relativeToBuild(
-              this.options.srcDir,
-              file,
-            )
-          }
-          return
-        }
-        // Layout Priority: module.addLayout > .vue file > other extensions
-        if (configLayouts[name]) {
-          consola.warn(`Duplicate layout registration, "${name}" has been registered as "${configLayouts[name]}"`)
-        } else if (!templateVars.layouts[name] || /\.vue$/.test(file)) {
-          templateVars.layouts[name] = this.relativeToBuild(
-            this.options.srcDir,
-            file,
-          )
-        }
-      })
-    }
-    // If no default layout, create its folder and add the default folder
-    if (!templateVars.layouts.default) {
-      await fsExtra.mkdirp(r(this.options.buildDir, 'layouts'))
-      templatesFiles.push('layouts/default.vue')
-      templateVars.layouts.default = './layouts/default.vue'
-    }
+    // // -- Layouts --
+    // if (fsExtra.existsSync(path.resolve(this.options.srcDir, this.options.dir.layouts))) {
+    //   const configLayouts = this.options.layouts
+    //   const layoutsFiles = await glob(`${this.options.dir.layouts}/**/*.{${this.supportedExtensions.join(',')}}`, {
+    //     cwd: this.options.srcDir,
+    //     ignore: this.options.ignore,
+    //   })
+    //   layoutsFiles.forEach((file) => {
+    //     const name = file
+    //       .replace(new RegExp(`^${this.options.dir.layouts}/`), '')
+    //       .replace(new RegExp(`\\.(${this.supportedExtensions.join('|')})$`), '')
+    //     if (name === 'error') {
+    //       if (!templateVars.components.ErrorPage) {
+    //         templateVars.components.ErrorPage = this.relativeToBuild(
+    //           this.options.srcDir,
+    //           file,
+    //         )
+    //       }
+    //       return
+    //     }
+    //     // Layout Priority: module.addLayout > .vue file > other extensions
+    //     if (configLayouts[name]) {
+    //       consola.warn(`Duplicate layout registration, "${name}" has been registered as "${configLayouts[name]}"`)
+    //     } else if (!templateVars.layouts[name] || /\.vue$/.test(file)) {
+    //       templateVars.layouts[name] = this.relativeToBuild(
+    //         this.options.srcDir,
+    //         file,
+    //       )
+    //     }
+    //   })
+    // }
+    // // If no default layout, create its folder and add the default folder
+    // if (!templateVars.layouts.default) {
+    //   await fsExtra.mkdirp(r(this.options.buildDir, 'layouts'))
+    //   templatesFiles.push('layouts/default.vue')
+    //   templateVars.layouts.default = './layouts/default.vue'
+    // }
 
-    // -- Routes --
-    consola.debug('Generating routes...')
+    // // -- Routes --
+    // consola.debug('Generating routes...')
 
-    if (this._defaultPage) {
-      templateVars.router.routes = createRoutes(
-        ['index.vue'],
-        this.template.dir + '/pages',
-        '',
-        this.options.router.routeNameSplitter,
-      )
-    } else if (this._nuxtPages) {
-      // Use nuxt.js createRoutes bases on pages/
-      const files = {};
-      (await glob(`${this.options.dir.pages}/**/*.{${this.supportedExtensions.join(',')}}`, {
-          cwd: this.options.srcDir,
-          ignore: this.options.ignore,
-        })).forEach((f) => {
-          const key = f.replace(new RegExp(`\\.(${this.supportedExtensions.join('|')})$`), '')
-          // .vue file takes precedence over other extensions
-          if (/\.vue$/.test(f) || !files[key]) {
-            files[key] = f.replace(/(['"])/g, '\\$1')
-          }
-        })
-      templateVars.router.routes = createRoutes(
-        Object.values(files),
-        this.options.srcDir,
-        this.options.dir.pages,
-        this.options.router.routeNameSplitter,
-      )
-    } else { // If user defined a custom method to create routes
-      templateVars.router.routes = this.options.build.createRoutes(
-        this.options.srcDir,
-      )
-    }
+    // if (this._defaultPage) {
+    //   templateVars.router.routes = createRoutes(
+    //     ['index.vue'],
+    //     this.template.dir + '/pages',
+    //     '',
+    //     this.options.router.routeNameSplitter,
+    //   )
+    // } else if (this._nuxtPages) {
+    //   // Use nuxt.js createRoutes bases on pages/
+    //   const files = {};
+    //   (await glob(`${this.options.dir.pages}/**/*.{${this.supportedExtensions.join(',')}}`, {
+    //       cwd: this.options.srcDir,
+    //       ignore: this.options.ignore,
+    //     })).forEach((f) => {
+    //       const key = f.replace(new RegExp(`\\.(${this.supportedExtensions.join('|')})$`), '')
+    //       // .vue file takes precedence over other extensions
+    //       if (/\.vue$/.test(f) || !files[key]) {
+    //         files[key] = f.replace(/(['"])/g, '\\$1')
+    //       }
+    //     })
+    //   templateVars.router.routes = createRoutes(
+    //     Object.values(files),
+    //     this.options.srcDir,
+    //     this.options.dir.pages,
+    //     this.options.router.routeNameSplitter,
+    //   )
+    // } else { // If user defined a custom method to create routes
+    //   templateVars.router.routes = this.options.build.createRoutes(
+    //     this.options.srcDir,
+    //   )
+    // }
 
-    await this.nuxt.callHook(
-      'build:extendRoutes',
-      templateVars.router.routes,
-      r,
-    )
-    // router.extendRoutes method
-    if (typeof this.options.router.extendRoutes === 'function') {
-      // let the user extend the routes
-      const extendedRoutes = this.options.router.extendRoutes(
-        templateVars.router.routes,
-        r,
-      )
-      // Only overwrite routes when something is returned for backwards compatibility
-      if (extendedRoutes !== undefined) {
-        templateVars.router.routes = extendedRoutes
-      }
-    }
+    // await this.etsx.callHook(
+    //   'build:extendRoutes',
+    //   templateVars.router.routes,
+    //   r,
+    // )
+    // // router.extendRoutes method
+    // if (typeof this.options.router.extendRoutes === 'function') {
+    //   // let the user extend the routes
+    //   const extendedRoutes = this.options.router.extendRoutes(
+    //     templateVars.router.routes,
+    //     r,
+    //   )
+    //   // Only overwrite routes when something is returned for backwards compatibility
+    //   if (extendedRoutes !== undefined) {
+    //     templateVars.router.routes = extendedRoutes
+    //   }
+    // }
 
-    // Make routes accessible for other modules and webpack configs
-    this.routes = templateVars.router.routes
+    // // Make routes accessible for other modules and webpack configs
+    // this.routes = templateVars.router.routes
 
-    // -- Store --
-    // Add store if needed
-    if (this.options.store) {
-      templatesFiles.push('store.js')
-    }
+    // // -- Store --
+    // // Add store if needed
+    // if (this.options.store) {
+    //   templatesFiles.push('store.js')
+    // }
 
     // Resolve template files
-    const customTemplateFiles = this.options.build.templates.map(
-      (t) => t.dst || path.basename(t.src || t),
+    const customTemplateFiles = this.options.templates.map(
+      (t) => (t && t.dst) || path.basename(typeof t === 'object' ? t.src : t),
     )
-
-    templatesFiles = templatesFiles
+    type templates = Array<{
+      src: string;
+      dst: string;
+      custom: boolean;
+      options?: object;
+    }>
+    const templates: templates = templatesFiles
       .map((file) => {
-        // Skip if custom file was already provided in build.templates[]
+        // Skip if custom file was already provided in options.templates[]
+        // 如果options.templates[]中已提供自定义文件，请跳过
         if (customTemplateFiles.includes(file)) {
           return
         }
         // Allow override templates using a file with same name in ${srcDir}/app
-        const customPath = r(this.options.srcDir, 'app', file)
-        const customFileExists = fsExtra.existsSync(customPath)
+        const customPath = r(this.options.dir.src, 'app', file)
+        const customFileExists = this.lfs.existsSync(customPath)
 
         return {
           src: customFileExists ? customPath : r(this.template.dir, file),
@@ -537,16 +543,21 @@ export class Builder extends BuildModule {
           custom: customFileExists,
         }
       })
-      .filter(Boolean)
+      .filter(Boolean) as templates
 
     // -- Custom templates --
     // Add custom template files
-    templatesFiles = templatesFiles.concat(
-      this.options.build.templates.map((t) => {
-        return Object.assign(
+    // 添加自定义模板文件
+    templates.push(
+      ...this.options.templates.map((t) => {
+        return typeof t === 'string' ? {
+          src: r(this.options.dir.src, t),
+          dst: path.basename(t),
+          custom: true,
+        } : Object.assign(
           {
-            src: r(this.options.srcDir, t.src || t),
-            dst: t.dst || path.basename(t.src || t),
+            src: r(this.options.dir.src, t.src),
+            dst: t.dst || path.basename(t.src),
             custom: true,
           },
           t,
@@ -554,93 +565,66 @@ export class Builder extends BuildModule {
       }),
     )
 
-    // -- Loading indicator --
-    if (this.options.loadingIndicator.name) {
-      let indicatorPath = path.resolve(
-        this.template.dir,
-        'views/loading',
-        this.options.loadingIndicator.name + '.html',
-      )
+    // // -- Loading indicator --
+    // if (this.options.loadingIndicator.name) {
+    //   let indicatorPath = path.resolve(
+    //     this.template.dir,
+    //     'views/loading',
+    //     this.options.loadingIndicator.name + '.html',
+    //   )
 
-      let customIndicator = false
-      if (!fsExtra.existsSync(indicatorPath)) {
-        indicatorPath = this.nuxt.resolver.resolveAlias(
-          this.options.loadingIndicator.name,
-        )
+    //   let customIndicator = false
+    //   if (!fsExtra.existsSync(indicatorPath)) {
+    //     indicatorPath = this.nuxt.resolver.resolveAlias(
+    //       this.options.loadingIndicator.name,
+    //     )
 
-        if (fsExtra.existsSync(indicatorPath)) {
-          customIndicator = true
-        } else {
-          indicatorPath = null
-        }
-      }
+    //     if (fsExtra.existsSync(indicatorPath)) {
+    //       customIndicator = true
+    //     } else {
+    //       indicatorPath = null
+    //     }
+    //   }
 
-      if (indicatorPath) {
-        templatesFiles.push({
-          src: indicatorPath,
-          dst: 'loading.html',
-          custom: customIndicator,
-          options: this.options.loadingIndicator,
-        })
-      } else {
-        /* istanbul ignore next */
-        // eslint-disable-next-line no-console
-        logger.error(
-          `Could not fetch loading indicator: ${
-          this.options.loadingIndicator.name
-          }`,
-        )
-      }
-    }
+    //   if (indicatorPath) {
+    //     templatesFiles.push({
+    //       src: indicatorPath,
+    //       dst: 'loading.html',
+    //       custom: customIndicator,
+    //       options: this.options.loadingIndicator,
+    //     })
+    //   } else {
+    //     /* istanbul ignore next */
+    //     // eslint-disable-next-line no-console
+    //     logger.error(
+    //       `Could not fetch loading indicator: ${
+    //       this.options.loadingIndicator.name
+    //       }`,
+    //     )
+    //   }
+    // }
 
-    await this.nuxt.callHook('build:templates', {
-      templatesFiles,
+    await this.etsx.callHook('build:templates', {
+      templatesFiles: templates,
       templateVars,
       resolve: r,
     })
 
-    // Prepare template options
-    let lodash = null
-    const templateOptions = {
-      imports: {
-        serialize,
-        serializeFunction,
-        devalue,
-        hash,
-        r,
-        wp,
-        wChunk,
-        resolvePath: this.nuxt.resolver.resolvePath,
-        resolveAlias: this.nuxt.resolver.resolveAlias,
-        relativeToBuild: this.relativeToBuild,
-        // Legacy support: https://github.com/nuxt/nuxt.js/issues/4350
-        _: new Proxy({}, {
-          get(target, prop) {
-            if (!lodash) {
-              consola.warn('Avoid using _ inside templates')
-              lodash = require('lodash')
-            }
-            return lodash[prop]
-          },
-        }),
-      },
-      interpolate: /<%=([\s\S]+?)%>/g,
-    }
-
     // Add vue-app template dir to watchers
-    this.options.build.watch.push(this.template.dir)
+    this.buildOptions.watch.push(this.template.dir)
 
+    const templateOptions = this.templateOptions()
     // Interpret and move template files to .nuxt/
     await Promise.all(
-      templatesFiles.map(async ({ src, dst, options, custom }) => {
+      templates.map(async ({ src, dst, options, custom }) => {
         // Add custom templates to watcher
         if (custom) {
-          this.options.build.watch.push(src)
+          this.buildOptions.watch.push(src)
         }
 
         // Render template to dst
-        const fileContent = await fsExtra.readFile(src, 'utf8')
-        let content
+        const fileContent = await new Promise<string>((resolve, reject) => this.lfs.readFile(src, 'utf8', (e, res) => e ? reject(e) : resolve(res)))
+        let content: string
         try {
           const templateFunction = template(fileContent, templateOptions)
           content = stripWhitespace(
@@ -657,13 +641,61 @@ export class Builder extends BuildModule {
           /* istanbul ignore next */
           throw new Error(`Could not compile template ${src}: ${err.message}`)
         }
-        const _path = r(this.options.buildDir, dst)
         // Ensure parent dir exits and write file
-        await fsExtra.outputFile(_path, content, 'utf8')
+        // 确保父目录退出并写入文件
+        await new Promise((resolve, reject) => {
+          const file = r(this.options.dir.build, dst)
+          this.lfs.mkdirp(path.dirname(file), (e) => {
+            if (e) {
+              reject(e)
+            } else {
+              this.lfs.writeFile(
+                // 写入路径
+                file,
+                // 写入内容
+                content,
+                // 写入格式
+                'utf8',
+                // 回调
+                (e) => e ? reject(e) : resolve(),
+              )
+            }
+          })
+        })
       }),
     )
 
-    consola.success('Nuxt files generated')
+    logger.success('etsx files generated')
+  }
+  templateOptions() {
+    // Prepare template options
+    let lodash: any = null
+    const templateOptions = {
+      imports: {
+        serialize,
+        serializeFunction,
+        devalue,
+        hash,
+        r,
+        wp,
+        wChunk,
+        resolvePath: this.etsx.resolver.resolvePath,
+        resolveAlias: this.etsx.resolver.resolveAlias,
+        relativeToBuild: this.relativeToBuild,
+        // Legacy support: https://github.com/nuxt/nuxt.js/issues/4350
+        _: new Proxy({}, {
+          get(target, prop) {
+            if (!lodash) {
+              logger.warn('Avoid using _ inside templates')
+              lodash = require('lodash')
+            }
+            return lodash[prop]
+          },
+        }),
+      },
+      interpolate: /<%=([\s\S]+?)%>/g,
+    }
+    return templateOptions
   }
 
   normalizePlugins(): moduleContainer.pluginObject[] {

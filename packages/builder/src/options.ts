@@ -6,6 +6,7 @@ import { cachedFileSystem } from '@etsx/fs';
 import { proxy } from '@etsx/utils';
 import WebpackDevMiddleware from 'webpack-dev-middleware';
 import WebpackHotMiddleware from 'webpack-hot-middleware';
+import HardSourcePlugin from 'hard-source-webpack-plugin'
 import webpack from 'webpack';
 
 const NodeWatchFileSystem = require('webpack/lib/node/NodeWatchFileSystem')
@@ -13,9 +14,13 @@ const NodeWatchFileSystem = require('webpack/lib/node/NodeWatchFileSystem')
 export type watch = string
 export type buildEnv = {
   /**
-   * 调试模式
+   * 开发模式
    */
   isDev: boolean;
+  /**
+   * 调试模式
+   */
+  isDebug: boolean;
   /**
    * 客户端
    */
@@ -86,22 +91,6 @@ export type Browser = {
    */
   watch: watch[];
   watchers: {
-  };
-  /**
-   * 自定义打包文件名
-   *
-   * 官方文档
-   * @see:https://webpack.js.org/guides/code-splitting/
-   * 中文文档
-   * @see:https://www.webpackjs.com/guides/code-splitting/
-   */
-  filenames: {
-    app: getFilenames;
-    chunk: getFilenames;
-    css: getFilenames;
-    img: getFilenames;
-    font: getFilenames;
-    video: getFilenames;
   };
   styleResources: {};
   plugins: webpack.Plugin[];
@@ -199,6 +188,12 @@ export class BuildOptions {
    */
   cache: boolean;
   /**
+   * 开启 HardSourceWebpackPlugin
+   * 类型: Boolean
+   * 默认: false
+   */
+  hardSource: false | any;
+  /**
    * weex构建
    */
   weex: Weex;
@@ -206,6 +201,22 @@ export class BuildOptions {
    * 浏览器构建配置
    */
   browser: Browser;
+  /**
+   * 自定义打包文件名
+   *
+   * 官方文档
+   * @see:https://webpack.js.org/guides/code-splitting/
+   * 中文文档
+   * @see:https://www.webpackjs.com/guides/code-splitting/
+   */
+  filenames: {
+    app: getFilenames;
+    chunk: getFilenames;
+    css: getFilenames;
+    img: getFilenames;
+    font: getFilenames;
+    video: getFilenames;
+  };
   /**
    * 您可以使用watch来监听文件更改。
    * 此功能特别适用用在modules中。
@@ -307,6 +318,7 @@ export class BuildOptions {
     this.parallel = typeof options.parallel === 'boolean' ? options.parallel : false;
     // uglifyjs-webpack-plugin 和 cache-loader 的缓存
     this.cache = typeof options.cache === 'boolean' ? options.cache : false;
+    this.hardSource = typeof options.hardSource === 'boolean' ? options.hardSource : false;
     // 监听
     this.watch = Array.isArray(options.watch) ? options.watch : [];
     // chokidar
@@ -325,18 +337,18 @@ export class BuildOptions {
       devMiddleware: ({} as WebpackDevMiddleware.Options),
     })
     // 浏览器构建配置
+    this.filenames = defaultsDeepClone<this['filenames']>(options.filenames, {
+      app: ({ isDev, isModern, isWeex }) => isWeex ? '[name].jsbundle.js' : (isDev ? `${isModern ? 'modern-' : ''}[name].js` : '[chunkhash].js'),
+      chunk: ({ isDev, isModern }) => isDev ? `${isModern ? 'modern-' : ''}[name].js` : '[chunkhash].js',
+      css: ({ isDev }) => isDev ? '[name].css' : '[contenthash].css',
+      img: ({ isDev }) => isDev ? '[path][name].[ext]' : 'img/[hash:7].[ext]',
+      font: ({ isDev }) => isDev ? '[path][name].[ext]' : 'fonts/[hash:7].[ext]',
+      video: ({ isDev }) => isDev ? '[path][name].[ext]' : 'videos/[hash:7].[ext]',
+    })
     this.browser = defaultsDeepClone<Browser>(options.browser, {
       enable: true,
       watch: [],
       watchers: {
-      },
-      filenames: {
-        app: ({ isDev, isModern }) => isDev ? `${isModern ? 'modern-' : ''}[name].js` : '[chunkhash].js',
-        chunk: ({ isDev, isModern }) => isDev ? `${isModern ? 'modern-' : ''}[name].js` : '[chunkhash].js',
-        css: ({ isDev }) => isDev ? '[name].css' : '[contenthash].css',
-        img: ({ isDev }) => isDev ? '[path][name].[ext]' : 'img/[hash:7].[ext]',
-        font: ({ isDev }) => isDev ? '[path][name].[ext]' : 'fonts/[hash:7].[ext]',
-        video: ({ isDev }) => isDev ? '[path][name].[ext]' : 'videos/[hash:7].[ext]',
       },
       styleResources: {},
       plugins: [],

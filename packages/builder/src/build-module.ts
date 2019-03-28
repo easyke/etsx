@@ -31,12 +31,6 @@ export class BuildModule extends EtsxModule {
     return this.buildOptions.browser
   }
   /**
-   * 小程序配置集合
-   */
-  get miniProgramOptions() {
-    return this.buildOptions.miniProgram
-  }
-  /**
    * 微信小程序配置
    */
   get wechatMpOptions() {
@@ -65,24 +59,6 @@ export class BuildModule extends EtsxModule {
    */
   get isEnableWeex(): boolean {
     return this.weexOptions.enable === true
-  }
-  /**
-   * 是否启用微信小程序
-   */
-  get isEnableMpWechat(): boolean {
-    return this.wechatMpOptions.enable === true
-  }
-  /**
-   * 是否启用百度小程序
-   */
-  get isEnableMpBaidu(): boolean {
-    return this.baiduMpOptions.enable === true
-  }
-  /**
-   * 是否启用支付宝小程序
-   */
-  get isEnableMpAlipay(): boolean {
-    return this.alipayMpOptions.enable === true
   }
   /**
    * 本地文件系统
