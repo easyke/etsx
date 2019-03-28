@@ -7,14 +7,13 @@ import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
 import WeexJsbundleHotMiddleware from './plugins/weex-jsbundle-hot'
 import { logger, parallel, sequence, wrapArray } from '@etsx/utils'
-
-const {
-  ClientConfig,
-  ModernConfig,
-  ServerConfig,
-  WeexConfig,
-  PerfLoader,
-} = require('./config')
+import {
+  ClientWebpackConfig,
+  ModernWebpackConfig,
+  ServerWebpackConfig,
+  WeexWebpackConfig,
+  // PerfLoader,
+} from './config'
 
 export class Bundler extends BuildModule {
   builder: Builder;
@@ -42,16 +41,16 @@ export class Bundler extends BuildModule {
     if (this.isEnableBrowser) {
       // 现代浏览器 - Modern
       if (this.options.modern) {
-        compilersOptions.set('modern', new ModernConfig(this.builder))
+        compilersOptions.set('modern', new ModernWebpackConfig(this.etsx))
       }
       // 古老浏览器 - Client
-      compilersOptions.set('client', new ClientConfig(this.builder))
+      compilersOptions.set('client', new ClientWebpackConfig(this.etsx))
       // 服务器渲染 - Server
-      compilersOptions.set('server', new ServerConfig(this.builder))
+      compilersOptions.set('server', new ServerWebpackConfig(this.etsx))
     }
     // 手机应用 - weex - Rax - android|ios
     if (this.isEnableWeex) {
-      compilersOptions.set('weex', new WeexConfig(this.builder))
+      compilersOptions.set('weex', new WeexWebpackConfig(this.etsx))
     }
     for (const p of this.builder.plugins) {
       compilersOptions.forEach((options, name) => {
