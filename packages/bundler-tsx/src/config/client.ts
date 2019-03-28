@@ -21,7 +21,7 @@ export class ClientWebpackConfig extends BrowserWebpackConfig {
     // 加入一个入口文件
     this.entry = {
       app: [
-        path.resolve(dir.build, 'app', 'client.js'),
+        path.resolve(dir.build, 'client.js'),
       ],
     }
 

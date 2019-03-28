@@ -9,7 +9,6 @@ import BuildModule from './build-module'
 import BundlerTsx from '@etsx/bundler-tsx'
 import BundlerIos from '@etsx/bundler-ios'
 import BundlerAndroid from '@etsx/bundler-android'
-import getBuildDirs from './get-build-dirs'
 import debounce from 'lodash/debounce'
 import omit from 'lodash/omit'
 import template from 'lodash/template'
@@ -162,7 +161,21 @@ export class Builder extends BuildModule {
       }),
     ])
     // 创建 .etsx/, .etsx/app and .etsx/dist 文件夹
-    await Promise.all(getBuildDirs(this).map((dir) => new Promise((resolve, reject) => {
+    const buildDirs = [r(this.options.dir.build, 'dist')]
+    /**
+     * 启用 浏览器模式
+     */
+    if (this.isEnableBrowser) {
+        /**
+         * 调试模式需要导出目录
+         */
+        buildDirs.push(
+          r(this.options.dir.build, 'dist', 'client'),
+          r(this.options.dir.build, 'dist', 'server'),
+          // r(builder.options.dir.dist.browser),
+        )
+    }
+    await Promise.all(buildDirs.map((dir) => new Promise((resolve, reject) => {
       this.lfs.mkdirp(dir, (e) => e ? reject(e) : resolve())
     })))
 

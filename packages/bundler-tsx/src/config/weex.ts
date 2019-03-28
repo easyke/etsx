@@ -17,7 +17,7 @@ export class WeexWebpackConfig extends OptionsWebpackConfig {
     // 加入一个入口文件
     this.entry = {
       index: [
-        path.resolve(dir.build, 'app', 'weex.js'),
+        path.resolve(dir.build, 'weex.tsx'),
       ],
     }
     this.optimization = {

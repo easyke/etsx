@@ -18,7 +18,7 @@ export class ServerWebpackConfig extends BrowserWebpackConfig {
     // 加入一个入口文件
     this.entry = {
       app: [
-        path.resolve(dir.build, 'app', 'server.js'),
+        path.resolve(dir.build, 'server.js'),
       ],
     }
     this.output.filename = 'server-bundle.js'
