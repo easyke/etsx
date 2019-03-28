@@ -103,7 +103,7 @@ export class Builder extends BuildModule {
     }
     const template = this.options.template || '@etsx/browser-weex-app'
     if (typeof template === 'string') {
-      this.template = this.etsx.resolver.requireModule(template).template
+      this.template = this.etsx.resolver.requireModule(template)
     } else {
       this.template = template
     }
@@ -334,26 +334,33 @@ export class Builder extends BuildModule {
   }
 
   validateTemplate() {
+    if (!this.template) {
+      throw new Error('template error');
+    }
+    if (!Array.isArray(this.template.files) || !this.template.files.length) {
+      throw new Error('template files error');
+    }
     // Validate template dependencies
-    const templateDependencies = this.template.dependencies
     const dpendencyFixes: string[] = []
-    Object.keys(templateDependencies).forEach((depName) => {
-      const depVersion = templateDependencies[depName]
-      const requiredVersion = `${depName}@${depVersion}`
+    if (this.template.dependencies) {
+      Object.keys(this.template.dependencies).forEach((depName) => {
+        const depVersion = this.template.dependencies[depName]
+        const requiredVersion = `${depName}@${depVersion}`
 
-      // Load installed version
-      const pkg = this.etsx.resolver.requireModule(path.join(depName, 'package.json'))
-      if (pkg) {
-        const validVersion = semver.satisfies(pkg.version, depVersion)
-        if (!validVersion) {
-          logger.warn(`${requiredVersion} is required but ${depName}@${pkg.version} is installed!`)
+        // Load installed version
+        const pkg = this.etsx.resolver.requireModule(path.join(depName, 'package.json'))
+        if (pkg) {
+          const validVersion = semver.satisfies(pkg.version, depVersion)
+          if (!validVersion) {
+            logger.warn(`${requiredVersion} is required but ${depName}@${pkg.version} is installed!`)
+            dpendencyFixes.push(requiredVersion)
+          }
+        } else {
+          logger.warn(`${depName}@${depVersion} is required but not installed!`)
           dpendencyFixes.push(requiredVersion)
         }
-      } else {
-        logger.warn(`${depName}@${depVersion} is required but not installed!`)
-        dpendencyFixes.push(requiredVersion)
-      }
-    })
+      })
+    }
 
     // Suggest dependency fixes (TODO: automate me)
     if (dpendencyFixes.length) {
@@ -394,7 +401,7 @@ export class Builder extends BuildModule {
       env: this.options.env,
       /*head: this.options.head,
       middleware: fsExtra.existsSync(path.join(this.options.srcDir, this.options.dir.middleware)),
-      store: this.options.store,*/
+      /*store: this.options.store,*/
       globalName: this.options.globalName,
       globals: determineGlobals(this.options.globalName, this.options.globals),
       css: this.options.css,

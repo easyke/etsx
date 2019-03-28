@@ -93,7 +93,7 @@ const babelOptions = {
       },
     ],
     require('@babel/plugin-transform-react-display-name'),
-    require('../../plugins/react-directive.js'),
+    require('../plugins/react-directive.js'),
   ],
 };
 if (process.env.BABEL_ENV === 'development') {

@@ -52,7 +52,7 @@ export class Application {
   }
   handle(reqOrWs: Request | WebSocket, resOrReq: Response | Request, next?: next): void {
     // 获取上下文
-    const context = parseArgs(arguments)
+    const context = parseArgs(...arguments)
     // 或许协议+主机名
     const protohost = (context.req && getProtocolHost(context.req.url)) || ''
     if (context.req) {
@@ -215,6 +215,7 @@ export class Application {
         handle = handle.handler.bind(handle)
       }
     }
+    path = (path as string) || '/'
     // 删除最后一个斜杆
     if (typeof path === 'string' && path[path.length - 1] === '/') {
       path = path.slice(0, -1)
@@ -223,7 +224,7 @@ export class Application {
       // 添加 这一层 中间件 加入 栈
       this.stack.push({
         // path 默认为 '/'
-        path: (path as string) || '/',
+        path,
         handle,
         method,
         isWebSocket,
@@ -259,10 +260,8 @@ export class Application {
 export function createApp(options?: ApplicationOptions): App {
   return (new Application(options)).app
 }
-export function parseArgs(_: any): context {
+export const parseArgs = (...args: any[]): context => {
   const context: context = Object.create(null)
-  const args: any[] = Array.prototype.concat(Array.prototype.slice.call(arguments as IArguments))
-
   if (Array.isArray(args)) {
     for (let i = args.length - 1; i >= 0; i--) {
       // function

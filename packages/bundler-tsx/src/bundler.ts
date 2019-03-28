@@ -72,7 +72,7 @@ export class Bundler extends BuildModule {
             break;
         }
         if (p.name && options.resolve && options.resolve.alias && !options.resolve.alias[p.name]) {
-          options.resolve.alias[p.name] = isHas ? p.src : './empty.js'
+          options.resolve.alias[p.name] = isHas ? p.src : './empty'
         }
       })
     }

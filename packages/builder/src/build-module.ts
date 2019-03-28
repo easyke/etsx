@@ -31,24 +31,6 @@ export class BuildModule extends EtsxModule {
     return this.buildOptions.browser
   }
   /**
-   * 微信小程序配置
-   */
-  get wechatMpOptions() {
-    return this.miniProgramOptions.wechat
-  }
-  /**
-   * 百度小程序配置
-   */
-  get baiduMpOptions() {
-    return this.miniProgramOptions.baidu
-  }
-  /**
-   * 支付宝小程序配置
-   */
-  get alipayMpOptions() {
-    return this.miniProgramOptions.alipay
-  }
-  /**
    * 是否启用浏览器
    */
   get isEnableBrowser(): boolean {
