@@ -129,6 +129,7 @@ export const loadPlugins = (context: BuildContext, plugins: webpack.Plugin[]) =>
     },
   }))
 
+  plugins.push(new webpack.DefinePlugin(context.env))
   if (buildOptions.hardSource) {
     plugins.push(new HardSourcePlugin(Object.assign({}, buildOptions.hardSource)))
   }

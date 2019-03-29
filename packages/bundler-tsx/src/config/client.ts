@@ -119,7 +119,6 @@ export class ClientWebpackConfig extends BrowserWebpackConfig {
         inject: false, // Resources will be injected using bundleRenderer
       }),
     )
-    // 添加模块热重载
     // 加载 模块热重载 配置
     const client = browserOptions.hotMiddlewareClient || {}
     const { ansiColors, overlayStyles, ...others } = client

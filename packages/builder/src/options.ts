@@ -280,6 +280,7 @@ export class BuildOptions {
   optimization: webpack.Options.Optimization;
   terser: TerserWebpackPlugin.TerserPluginOptions;
   optimizeCSS: OptimizeCSSAssetsPlugin.Options;
+  transpile: Array<string | RegExp>;
   /**
    * 构造函数
    * @param options 配置项
@@ -479,11 +480,12 @@ export class BuildOptions {
         cacheGroups: {},
       },
     })
+    // Name of NPM packages to be transpiled
+    this.transpile = Array.isArray(options.transpile) ? options.transpile : []
     this.terser = defaultsDeepClone<this['terser']>(options.optimization, {})
     this.optimizeCSS = defaultsDeepClone<this['optimizeCSS']>(options.optimization || {}, {})
     Object.assign(this, {
       // 后续需要完善的
-      transpile: [], // Name of NPM packages to be transpiled
       postcss: {
         preset: {
           // https://cssdb.org/#staging-process

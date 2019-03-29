@@ -13,6 +13,24 @@ export class BuildContext extends BuildModule {
     this.isServer = this.name === 'server'
     this.isModern = this.name === 'modern'
   }
+  public get env(): { [key: string]: string | undefined } {
+    const etsxEnv = this.etsxEnv
+    const env: this['options']['env'] = {
+      'process.env.NODE_ENV': JSON.stringify(etsxEnv.isDev ? 'development' : 'production'),
+      'process.etsxis.debug': JSON.stringify(etsxEnv.isDebug),
+      'process.etsxis.server': JSON.stringify(etsxEnv.isServer),
+      'process.etsxis.client': JSON.stringify(etsxEnv.isClient),
+      'process.etsxis.modern': JSON.stringify(etsxEnv.isModern),
+      'process.etsxis.weex': JSON.stringify(etsxEnv.isWeex),
+      'process.etsxis.browser': JSON.stringify(etsxEnv.isClient || etsxEnv.isModern),
+    }
+    Object.entries(this.options.env).forEach(([key, value]) => {
+      env['process.env.' + key] = ['boolean', 'number'].includes(typeof value)
+          ? value
+          : JSON.stringify(value)
+    })
+    return env
+  }
   public get etsxEnv(): buildEnv {
     return {
       isDev: this.options.dev,

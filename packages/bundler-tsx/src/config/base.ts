@@ -50,7 +50,7 @@ export class BaseWebpackConfig implements webpack.Configuration {
    * Specify dependencies that shouldn’t be resolved by webpack, but should become dependencies of the resulting bundle.
    * The kind of the dependency depends on output.libraryTarget.
    */
-  externals?: webpack.Configuration['externals'];
+  externals: webpack.Configuration['externals'];
   /**
    * - "web" Compile for usage in a browser-like environment (default).
    * - "webworker" Compile as WebWorker.
@@ -129,6 +129,8 @@ export class BaseWebpackConfig implements webpack.Configuration {
     }
 
     this.output = {}
+    // 排查
+    this.externals = []
 
     this.performance = {
       hints: false,

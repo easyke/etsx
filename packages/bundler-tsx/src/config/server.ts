@@ -2,12 +2,14 @@ import Etsx from 'etsx';
 import path from 'path';
 import BuildContext from './context'
 import BrowserWebpackConfig from './browser'
+import escapeRegExp from 'lodash/escapeRegExp'
+import nodeExternals from 'webpack-node-externals'
 
 export class ServerWebpackConfig extends BrowserWebpackConfig {
   public constructor(etsx: Etsx) {
     const context = new BuildContext(etsx, 'server')
     super(context)
-    const { options: { dir } } = context
+    const { options: { dir, modulesDir }, lfs, buildOptions } = context
     // 编译为类 Node.js 环境可用（使用 Node.js require 加载 chunk）
     this.target = 'node'
     // 在node服务器渲染，不需要虚拟node的环境
@@ -36,6 +38,24 @@ export class ServerWebpackConfig extends BrowserWebpackConfig {
        * 默认值是：250000 (bytes)。
        */
       maxAssetSize: Infinity,
+    }
+    if (Array.isArray(this.externals)) {
+      const whitelist: nodeExternals.WhitelistOption[] = [
+        /\.css$/,
+        /\?vue&type=style/,
+      ]
+      for (const pattern of buildOptions.transpile) {
+        if (pattern instanceof RegExp) {
+          whitelist.push(pattern)
+        } else {
+          const posixModule = pattern.replace(/\\/g, '/')
+          whitelist.push(new RegExp(escapeRegExp(posixModule)))
+        }
+      }
+      this.externals.push(...etsx.resolver.getModulesDirs(module.paths).concat(modulesDir).filter((dir) => lfs.existsSync(dir)).map((modulesDir) => nodeExternals({
+        whitelist,
+        modulesDir,
+      })))
     }
   }
 }
