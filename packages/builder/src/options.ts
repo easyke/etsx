@@ -8,6 +8,9 @@ import WebpackDevMiddleware from 'webpack-dev-middleware';
 import WebpackHotMiddleware from 'webpack-hot-middleware';
 import HardSourcePlugin from 'hard-source-webpack-plugin'
 import webpack from 'webpack';
+import BundleAnalyzer from 'webpack-bundle-analyzer'
+import TerserWebpackPlugin from 'terser-webpack-plugin'
+import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 
 const NodeWatchFileSystem = require('webpack/lib/node/NodeWatchFileSystem')
 
@@ -112,6 +115,10 @@ export type Browser = {
    * 类型: Object
    */
   hotMiddleware: WebpackHotMiddleware.Options;
+  hotMiddlewareClient: {
+    ansiColors: any;
+    overlayStyles: any;
+  };
   loaders: {
     /**
      * file-loader#options
@@ -155,7 +162,7 @@ export class BuildOptions {
    * 类型： Boolean 或 Object
    * 默认值： false
    */
-  analyze: boolean;
+  analyze: boolean | BundleAnalyzer.BundleAnalyzerPlugin.Options;
   /**
    * 开启 profiler 请查看 WebpackBar
    * 类型: Boolean
@@ -264,6 +271,14 @@ export class BuildOptions {
     }) => any[]);
     cacheDirectory?: string;
   };
+  splitChunks: {
+    layouts: boolean;
+    pages: boolean;
+    commons: boolean;
+  };
+  optimization: webpack.Options.Optimization;
+  terser: TerserWebpackPlugin.TerserPluginOptions;
+  optimizeCSS: OptimizeCSSAssetsPlugin.Options;
   /**
    * 构造函数
    * @param options 配置项
@@ -446,26 +461,26 @@ export class BuildOptions {
       babelrc: false,
       cacheDirectory: undefined,
     })
+    this.splitChunks = defaultsDeepClone<this['splitChunks']>(options.splitChunks, {
+      layouts: false,
+      pages: true,
+      commons: true,
+    })
+    this.optimization = defaultsDeepClone<this['optimization']>(options.optimization, {
+      runtimeChunk: 'single',
+      minimize: undefined,
+      minimizer: undefined,
+      splitChunks: {
+        chunks: 'all',
+        automaticNameDelimiter: '.',
+        name: undefined,
+        cacheGroups: {},
+      },
+    })
+    this.terser = defaultsDeepClone<this['terser']>(options.optimization, {})
+    this.optimizeCSS = defaultsDeepClone<this['optimizeCSS']>(options.optimization || {}, {})
     Object.assign(this, {
       // 后续需要完善的
-      terser: {},
-      optimizeCSS: undefined,
-      optimization: {
-        runtimeChunk: 'single',
-        minimize: undefined,
-        minimizer: undefined,
-        splitChunks: {
-          chunks: 'all',
-          automaticNameDelimiter: '.',
-          name: undefined,
-          cacheGroups: {},
-        },
-      },
-      splitChunks: {
-        layouts: false,
-        pages: true,
-        commons: true,
-      },
       transpile: [], // Name of NPM packages to be transpiled
       postcss: {
         preset: {

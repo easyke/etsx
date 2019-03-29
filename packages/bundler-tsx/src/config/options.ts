@@ -148,7 +148,12 @@ export const getOutput = (context: BuildContext): webpack.Output => {
   }
 }
 
-export const getFileName = (key: keyof BuildOptions['filenames'], { options, buildOptions, etsxEnv }: BuildContext): string => {
+export const getFileName = (key: keyof BuildOptions['filenames'], { options, buildOptions, etsxEnv, isModern }: BuildContext): string => {
+  if (buildOptions.analyze) {
+    if (['app', 'chunk'].includes(key)) {
+      return `${isModern ? 'modern-' : ''}[name].js`
+    }
+  }
   let fileName = buildOptions.filenames[key]
   if (typeof fileName === 'function') {
     fileName = fileName(etsxEnv)

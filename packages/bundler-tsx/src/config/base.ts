@@ -95,9 +95,9 @@ export class BaseWebpackConfig implements webpack.Configuration {
   /** Limit the number of parallel processed modules. Can be used to fine tune performance or to get more reliable profiling results */
   parallelism?: number;
   /** Optimization options */
-  optimization?: webpack.Options.Optimization;
+  optimization: webpack.Options.Optimization;
   public constructor(context: BuildContext) {
-    const { etsx, name, options } = context
+    const { etsx, name, options, buildOptions } = context
     this.name = name
     // this.mode
     this.mode = process.env.NODE_ENV as webpack.Configuration['mode'] || 'none'
@@ -113,6 +113,7 @@ export class BaseWebpackConfig implements webpack.Configuration {
     this.plugins = []
     const webpackModulesDir = etsx.resolver.getModulesDirs(module.paths).concat(options.modulesDir)
 
+    this.optimization = buildOptions.optimization
     this.resolve = {
       extensions: ['.js', '.jsx', '.json', '.mjs', '.ts', '.tsx'],
       alias: {},
