@@ -339,7 +339,7 @@ export class BuildOptions {
     //
     this.watchers = defaultsDeepClone<this['watchers']>(options.watchers, {})
     // chokidar
-    this.chokidar = defaultsDeepClone<WatchOptions>(options.weex, {
+    this.chokidar = defaultsDeepClone<WatchOptions>(options.chokidar, {
       ignoreInitial: true,
     })
     // 浏览器构建配置
