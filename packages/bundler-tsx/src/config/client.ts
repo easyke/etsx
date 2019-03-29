@@ -7,10 +7,9 @@ import BrowserWebpackConfig from './browser'
 import BundleAnalyzer from 'webpack-bundle-analyzer'
 import TerserWebpackPlugin from 'terser-webpack-plugin'
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 
 const es3ifyPlugin = require('es3ify-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 export class ClientWebpackConfig extends BrowserWebpackConfig {
   public constructor(etsx: Etsx, name: 'client' | 'modern' = 'client') {
@@ -105,24 +104,18 @@ export class ClientWebpackConfig extends BrowserWebpackConfig {
       this.plugins.push(new BundleAnalyzer.BundleAnalyzerPlugin(options))
     }
 
+    if (!isModern) {
+      // 转 es3 支持 ie
+      this.plugins.push(new es3ifyPlugin())
+    }
+
     // 添加插件
     this.plugins.push(
-      new es3ifyPlugin(),
-
       new HtmlWebpackPlugin({
-        template: path.resolve(dir.build, 'app', 'index.html'),
         filename: 'index.html',
-        inject: true,
-      }),
-      new HtmlWebpackPlugin({
         template: path.resolve(dir.build, 'app', 'index.html'),
-        filename: 'index.html',
-        inject: true,
-      }),
-      // 样式插件
-      new MiniCssExtractPlugin({
-        filename: isDev ? '[name].css' : '[name].[hash].css',
-        chunkFilename: isDev ? '[id].css' : '[id].[hash].css',
+        minify: browserOptions.html.minify,
+        inject: false, // Resources will be injected using bundleRenderer
       }),
     )
     // 添加模块热重载

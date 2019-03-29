@@ -116,8 +116,8 @@ export type Browser = {
    */
   hotMiddleware: WebpackHotMiddleware.Options;
   hotMiddlewareClient: {
-    ansiColors: any;
-    overlayStyles: any;
+    ansiColors?: any;
+    overlayStyles?: any;
   };
   loaders: {
     /**
@@ -428,6 +428,7 @@ export class BuildOptions {
       },
       devMiddleware: ({} as WebpackDevMiddleware.Options),
       hotMiddleware: {},
+      hotMiddlewareClient: {},
       loaders: {
         file: {},
         fontUrl: { limit: 1000 },
