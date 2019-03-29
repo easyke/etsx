@@ -100,7 +100,7 @@ export function logChanged(event: string, path: string) {
   logger.stopAndPersist(chalk.blue.bold(stdEnv.isWindows ? '»' : '↻'), chalk.blue(path))
 }
 
-export async function loadEtsxConfig(srcDir: string, configFile: string, builds: string[]): Promise<EtsxOptions> {
+export async function loadEtsxConfig(srcDir: string, configFile: string, builds: string[], buildExtend: string[]): Promise<EtsxOptions> {
   let options = {}
   const configFilePath = path.resolve(srcDir, configFile)
   if (fs.existsSync(configFilePath)) {
@@ -136,27 +136,9 @@ export async function loadEtsxConfig(srcDir: string, configFile: string, builds:
       src: srcDir,
     },
     build: {
-
+      buildExtend,
       browser: {
         enable: isBuildAll || builds.includes('web'),
-      },
-      /**
-       * 小程序配置
-       */
-      miniProgram: {
-        wechat: {
-          // 默认启用
-          enable: isBuildAll || builds.includes('wechatmp'),
-        },
-        baidu: {
-          // 默认启用
-          enable: isBuildAll || builds.includes('baidump'),
-
-        },
-        alipay: {
-          // 默认启用
-          enable: isBuildAll || builds.includes('alipaymp'),
-        },
       },
       weex: {
         // 启用 jsbundle - webpack 构建 - 如果 ios或安卓 构建，将启用 jsbundle - webpack 构建

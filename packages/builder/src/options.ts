@@ -269,6 +269,7 @@ export class BuildOptions {
   terser: TerserWebpackPlugin.TerserPluginOptions;
   optimizeCSS: OptimizeCSSAssetsPlugin.Options;
   transpile: Array<string | RegExp>;
+  buildExtend: string[];
   /**
    * 构造函数
    * @param options 配置项
@@ -465,6 +466,7 @@ export class BuildOptions {
     this.transpile = Array.isArray(options.transpile) ? options.transpile : []
     this.terser = defaultsDeepClone<this['terser']>(options.optimization, {})
     this.optimizeCSS = defaultsDeepClone<this['optimizeCSS']>(options.optimization || {}, {})
+    this.buildExtend = Array.isArray(options.buildExtend) ? options.buildExtend : [];
     Object.assign(this, {
       // 后续需要完善的
       postcss: {

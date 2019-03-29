@@ -131,7 +131,6 @@ export class Builder extends BuildModule {
     }
     // 等待项目准备好了
     await this.etsx.ready()
-
     // 调用构建前钩子
     await this.etsx.callHook('build:before', this, this.buildOptions)
 
@@ -205,7 +204,7 @@ export class Builder extends BuildModule {
    */
   async validateWeexPages() {
     // tslint:disable-next-line:no-console
-    console.log(555557)
+    console.log('validateWeexPages')
   }
   /**
    * 浏览器构建

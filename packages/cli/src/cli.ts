@@ -31,6 +31,7 @@ export class Cli {
   port: port;
   [etsx]?: Etsx;
   builds: build[];
+  buildExtend: string[];
   [listener]?: Listener;
   etsxOptions: EtsxOptions;
   srcDir: string;
@@ -51,7 +52,8 @@ export class Cli {
     this.port = options.port || 3000
     this.host = options.host || ''
     this.unixSocket = options.unixSocket || ''
-    this.builds = Array.isArray(options.builds) ? options.builds : ['all']
+    this.buildExtend = Array.isArray(options.buildExtend) ? options.buildExtend : []
+    this.builds = Array.isArray(options.builds) ? options.builds : (this.buildExtend.length > 0 ? [] : ['all'])
     this.devBaseUrl = options.devBaseUrl || ''
     this.weexHotReloadWs = options.weexHotReloadWs || ''
     this.etsxOptions = {}
@@ -275,7 +277,7 @@ export class Cli {
    * 加载项目配置项
    */
   async loadEtsxConfig() {
-    this.etsxOptions = await loadEtsxConfig(this.srcDir, this.configFile, this.builds)
+    this.etsxOptions = await loadEtsxConfig(this.srcDir, this.configFile, this.builds, this.buildExtend)
   }
   /**
    * 加载项目配置项 - 并且实例化项目

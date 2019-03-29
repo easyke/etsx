@@ -29,6 +29,7 @@ program.version(pkg.version)
   .option('--build:ios', 'build ios app', false)
   .option('--build:weex', 'build weex-jsbundle not run app', false)
   .option('--build:android', 'build android app', false)
+  .option('--build:extend [type]', 'build extend', '')
   .option('-c --config-file [path]', 'Path to etsx config file (default: etsx.config.js)', 'etsx.config.js')
   .option('--clean', 'clean etsx before build android app')
 
@@ -133,6 +134,13 @@ export function launch(argv: string[] = getProcessArgvs()) {
   if (semver.satisfies(process.versions.node, '>= 6.0.0')) {
     // require('v8-compile-cache')
   }
+  const buildExtend: string[] = []
+  const findExtendIndex = () => (i = argv.indexOf('--build:extend'))
+  let i: number = -1
+  while ((findExtendIndex()) > -1 && i > -1) {
+    buildExtend.push(argv.splice(i, 2)[1])
+  }
+  program.buildExtend = buildExtend.filter(Boolean)
   argv = parseBuildArgvs(argv || [])
   return new Promise((resolve, reject) => {
     try {
@@ -167,9 +175,8 @@ export const buildAll: string[] = [
 function initBuildByProgram(program: object) {
   const cliBuilds = Object.keys(program).concat(Object.getOwnPropertyNames(program)).filter((item: string) => item && item.indexOf('build:') === 0)
   const builds = buildAll.filter((item) => cliBuilds.indexOf('build:' + item) > -1)
-
   if (!builds.length || builds.indexOf('all') > -1) {
-    return buildAll
+    return (program as any).buildExtend.length > 0 ? [] :  buildAll
   }
   (program as any).builds = builds
 }
