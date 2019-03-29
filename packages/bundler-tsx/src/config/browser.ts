@@ -11,7 +11,6 @@ export class BrowserWebpackConfig extends OptionsWebpackConfig {
     // 编译为类 Node.js 环境可用（使用 Node.js require 加载 chunk）
     this.target = 'node'
     // 配置名称，加载多个配置时使用。
-    this.name = 'weex'
 
     // 加入一个入口文件
     this.entry = {
@@ -42,20 +41,8 @@ export class BrowserWebpackConfig extends OptionsWebpackConfig {
             plugins: [
               require('postcss-import')({
                 resolve: createResolver({
-                  alias: {
-                    '~web': srcWebDir,
-                    '~wap': srcWapDir,
-                    '~~': rootDir,
-                    '@web': srcWebDir,
-                    '@wap': srcWapDir,
-                    '@@': rootDir,
-                  },
-                  modules: [
-                    srcWebDir,
-                    srcWapDir,
-                    rootDir, // ,
-                    // ...this[options].modulesDir
-                  ],
+                  alias: this.resolve.alias,
+                  modules: this.resolve.modules,
                 }),
               }),
               require('postcss-url')({}),

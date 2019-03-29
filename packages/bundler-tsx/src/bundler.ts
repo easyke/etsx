@@ -158,7 +158,7 @@ export class Bundler extends BuildModule {
     }
   }
   addHotForWeex(compiler: webpack.Compiler) {
-    logger.debug('Adding webpack dev middleware for weex...')
+    logger.debug('Adding webpack hot middleware for weex...')
 
     const name = compiler.options.name
     if (!name) {
@@ -175,7 +175,7 @@ export class Bundler extends BuildModule {
     }));
   }
   addHotForBrowser(compiler: webpack.Compiler) {
-    logger.debug('Adding webpack dev middleware for browser...')
+    logger.debug('Adding webpack hot middleware for browser...')
     const name = compiler.options.name
     if (!name) {
       throw new Error('没有传入name');

@@ -36,36 +36,6 @@ export const getAlias = (context: BuildContext): { [key: string]: string; } => {
     [staticDir]: path.join(dir.src, staticDir),
   };
 }
-export const getBabelOptions = (context: BuildContext): { babelrc?: boolean; presets: any[], plugins: any[]} => {
-  const options = clone(context.buildOptions.babel)
-
-  if (typeof options.presets === 'function') {
-    options.presets = options.presets({
-      isDev: context.options.dev,
-      isDebug: !!context.options.debug,
-      isWeex: context.isWeex,
-      isModern: context.isModern,
-      isClient: !context.isServer,
-      isServer: context.isServer,
-    })
-  }
-  if (!options.babelrc && !options.presets) {
-    const buildTarget = ['server', 'client', 'weex', 'modern'].includes(context.name) ? context.name : 'client'
-    options.presets = [
-      [
-        require.resolve('@etsx/babel-preset-app'),
-        {
-          isDev: context.options.dev,
-          isDebug: false,
-          isModern: context.isModern,
-          buildTarget,
-        },
-      ],
-    ]
-  }
-
-  return options as any
-}
 export const loadRules = (context: BuildContext, rules: webpack.RuleSetRule[]) => {
   const babelOptions = getBabelOptions(context)
   if (!Array.isArray(babelOptions.plugins)) {
@@ -191,4 +161,35 @@ export const getFileName = (key: keyof BuildOptions['filenames'], { options, bui
   }
   return fileName
 }
+
+export const getBabelOptions = (context: BuildContext): { babelrc?: boolean; presets: any[], plugins: any[] } => {
+  const options = clone(context.buildOptions.babel)
+
+  if (typeof options.presets === 'function') {
+    options.presets = options.presets({
+      isDev: context.options.dev,
+      isDebug: !!context.options.debug,
+      isWeex: context.isWeex,
+      isModern: context.isModern,
+      isClient: !context.isServer,
+      isServer: context.isServer,
+    })
+  }
+  if (!options.babelrc && !options.presets) {
+    const buildTarget = ['server', 'client', 'weex', 'modern'].includes(context.name) ? context.name : 'client'
+    options.presets = [
+      [
+        require.resolve('@etsx/babel-preset-app'),
+        {
+          isDev: context.options.dev,
+          isDebug: false,
+          isModern: context.isModern,
+          buildTarget,
+        },
+      ],
+    ]
+  }
+  return options as any
+}
+
 export default OptionsWebpackConfig
