@@ -12,8 +12,6 @@ import BundleAnalyzer from 'webpack-bundle-analyzer'
 import TerserWebpackPlugin from 'terser-webpack-plugin'
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 
-const NodeWatchFileSystem = require('webpack/lib/node/NodeWatchFileSystem')
-
 export type watch = string
 export type buildEnv = {
   /**
@@ -69,8 +67,6 @@ export type Weex = {
    * 类型: Array<String>
    */
   watch: watch[];
-  watchers: {
-  };
   /**
    * 插件
    */
@@ -93,8 +89,6 @@ export type Browser = {
    * 类型: Array<String>
    */
   watch: watch[];
-  watchers: {
-  };
   styleResources: {};
   plugins: webpack.Plugin[];
   /**
@@ -227,10 +221,16 @@ export class BuildOptions {
    * 类型: Array<String>
    */
   watch: watch[];
+
+  watchers: webpack.Compiler.WatchOptions;
   /**
    * chokidar.WatchOptions
    */
   chokidar: WatchOptions;
+  /**
+   * 监听
+   */
+  chokidarWatch: (paths: string | string[], options?: WatchOptions) => FSWatcher;
   /**
    * 统一webpack-stats
    * 如果你不希望使用 quiet 或 noInfo 这样的不显示信息，
@@ -247,14 +247,6 @@ export class BuildOptions {
    * 本地文件系统
    */
   localFileSystem: cachedFileSystem;
-  /**
-   * 监听文件系统
-   */
-  watchFileSystem: NodeWatchFileSystem;
-  /**
-   * 监听
-   */
-  chokidarWatch: (paths: string | string[], options?: WatchOptions) => FSWatcher;
   babel: {
     babelrc: boolean;
     plugins?: any[];
@@ -319,10 +311,6 @@ export class BuildOptions {
       // 使用文件系统
       this.localFileSystem = proxy(fs, cachedFileSystem, { duration: 60000 })
     }
-    // 初始化文件监听系统
-    this.watchFileSystem = new NodeWatchFileSystem(
-      this.localFileSystem,
-    )
 
     // 控制部分构建信息输出日志
     this.quiet = typeof options.quiet === 'boolean' ? options.quiet : Boolean(env.ci || env.test);
@@ -347,6 +335,8 @@ export class BuildOptions {
     this.hardSource = typeof options.hardSource === 'boolean' ? options.hardSource : false;
     // 监听
     this.watch = Array.isArray(options.watch) ? options.watch : [];
+    //
+    this.watchers = defaultsDeepClone<this['watchers']>(options.watchers, {})
     // chokidar
     this.chokidar = defaultsDeepClone<WatchOptions>(options.weex, {
       ignoreInitial: true,
@@ -357,8 +347,6 @@ export class BuildOptions {
       iosAppId: 'etsx.app.easycms.site',
       androidAppId: 'etsx.app.easycms.site',
       watch: [],
-      watchers: {
-      },
       plugins: [],
       devMiddleware: ({} as WebpackDevMiddleware.Options),
     })
@@ -374,8 +362,6 @@ export class BuildOptions {
     this.browser = defaultsDeepClone<Browser>(options.browser, {
       enable: true,
       watch: [],
-      watchers: {
-      },
       styleResources: {},
       plugins: [],
       html: {

@@ -61,12 +61,6 @@ export class BuildModule extends EtsxModule {
     return this.buildOptions.chokidarWatch
   }
   /**
-   * 监听文件系统
-   */
-  get watchFileSystem() {
-    return this.buildOptions.watchFileSystem
-  }
-  /**
    * 本地文件系统
    */
   get localFileSystem() {

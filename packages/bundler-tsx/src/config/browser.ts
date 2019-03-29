@@ -1,8 +1,8 @@
 import path from 'path';
 import OptionsWebpackConfig from './options';
 import BuildContext from './context'
-import WeexJsbundleFrameworkComment from '../plugins/weex-jsbundle';
-import createResolver from 'postcss-import-resolver';
+
+const createResolver = require('postcss-import-resolver')
 
 export class BrowserWebpackConfig extends OptionsWebpackConfig {
   public constructor(context: BuildContext) {
@@ -103,8 +103,6 @@ export class BrowserWebpackConfig extends OptionsWebpackConfig {
         },
       ],
     })
-    // 添加插件
-    this.plugins.push(new WeexJsbundleFrameworkComment())
   }
 }
 

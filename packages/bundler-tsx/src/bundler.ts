@@ -14,6 +14,7 @@ import {
   WeexWebpackConfig,
   // PerfLoader,
 } from './config'
+import NodeWatchFileSystem from './watch'
 
 export class Bundler extends BuildModule {
   builder: Builder;
@@ -109,7 +110,9 @@ export class Bundler extends BuildModule {
       await this.etsx.callHook('build:resources', this.mfs || this.lfs)
     })
     // 指定监听的文件系统
-    compiler.watchFileSystem = this.watchFileSystem
+    compiler.watchFileSystem = new NodeWatchFileSystem(
+      this.localFileSystem,
+    )
     // 输入文件系统使用本地文件系统
     compiler.inputFileSystem = this.lfs
     // 输出文件系统使用本地文件系统
@@ -121,13 +124,10 @@ export class Bundler extends BuildModule {
         // --- 开发模式构建 ---
         if (['client', 'modern'].includes(name)) {
           // 输出文件系统使用内存文件系统
-          compiler.outputFileSystem = this.mfs
           // 浏览器-客户端构建，监视由 webpackDevForBrowser 启动
           this.addHotForBrowser(compiler)
           this.webpackDev(compiler, 'browser')
         } else if (name === 'weex') {
-          // 输出文件系统使用内存文件系统
-          compiler.outputFileSystem = this.mfs
           // weex-app客户端构建， 监视由 webpackDevForWeex 启动
           this.addHotForWeex(compiler)
           this.webpackDev(compiler, 'weex')
@@ -137,7 +137,7 @@ export class Bundler extends BuildModule {
           this.compilersWatching.set(
             compiler,
             compiler.watch(
-              this.buildOptions.browser.watchers,
+              this.buildOptions.watchers,
               (err) => err ? reject(err) : resolve(),
             ))
         }
@@ -210,10 +210,12 @@ export class Bundler extends BuildModule {
       compiler,
       Object.assign(
         {
+          // 输出文件系统使用内存文件系统
+          fs: this.mfs,
           publicPath,
           stats: false,
           logLevel: 'silent',
-          watchOptions: this.buildOptions[terminal].watchers,
+          watchOptions: this.buildOptions.watchers,
         },
         this.buildOptions[terminal].devMiddleware,
       ),
