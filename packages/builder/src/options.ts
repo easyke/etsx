@@ -119,6 +119,7 @@ export type Browser = {
     ansiColors?: any;
     overlayStyles?: any;
   };
+  appTemplatePath?: string;
   loaders: {
     /**
      * file-loader#options

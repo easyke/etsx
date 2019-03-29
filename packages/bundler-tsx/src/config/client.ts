@@ -109,11 +109,12 @@ export class ClientWebpackConfig extends BrowserWebpackConfig {
       this.plugins.push(new es3ifyPlugin())
     }
 
+    const appTemplatePath = typeof browserOptions.appTemplatePath === 'string' ? browserOptions.appTemplatePath : path.resolve(dir.build, 'views/app.template.html')
     // 添加插件
     this.plugins.push(
       new HtmlWebpackPlugin({
-        filename: 'index.html',
-        template: path.resolve(dir.build, 'app', 'index.html'),
+        filename: '../server/index.ssr.html',
+        template: appTemplatePath,
         minify: browserOptions.html.minify,
         inject: false, // Resources will be injected using bundleRenderer
       }),
