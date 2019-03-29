@@ -251,6 +251,19 @@ export class BuildOptions {
    * 监听
    */
   chokidarWatch: (paths: string | string[], options?: WatchOptions) => FSWatcher;
+  babel: {
+    babelrc: boolean;
+    plugins?: any[];
+    presets?: any[] | ((env: {
+      isDev: boolean;
+      isDebug: boolean;
+      isWeex: boolean;
+      isModern: boolean;
+      isClient: boolean;
+      isServer: boolean;
+    }) => any[]);
+    cacheDirectory?: string;
+  };
   /**
    * 构造函数
    * @param options 配置项
@@ -429,6 +442,10 @@ export class BuildOptions {
         /vue-ssr-(client|modern)-manifest.json/,
       ],
     })
+    this.babel = defaultsDeepClone<this['babel']>(options.babel, {
+      babelrc: false,
+      cacheDirectory: undefined,
+    })
     Object.assign(this, {
       // 后续需要完善的
       terser: {},
@@ -448,10 +465,6 @@ export class BuildOptions {
         layouts: false,
         pages: true,
         commons: true,
-      },
-      babel: {
-        babelrc: false,
-        cacheDirectory: undefined,
       },
       transpile: [], // Name of NPM packages to be transpiled
       postcss: {

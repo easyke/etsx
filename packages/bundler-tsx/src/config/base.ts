@@ -1,3 +1,4 @@
+import path from 'path'
 import webpack from 'webpack'
 import { getOptionsNoVoid } from '@etsx/utils'
 import BuildContext from './context'
@@ -105,13 +106,12 @@ export class BaseWebpackConfig implements webpack.Configuration {
       this.mode = 'none'
     }
     // this.context
-    this.context = etsx.options.dir.root || process.cwd()
+    this.context = options.dir.root || process.cwd()
     // 调试模式
     this.devtool = false
     // 插件
     this.plugins = []
-
-    const webpackModulesDir = ['node_modules'].concat(options.modulesDir)
+    const webpackModulesDir = etsx.resolver.getModulesDirs(module.paths).concat(options.modulesDir)
 
     this.resolve = {
       extensions: ['.js', '.jsx', '.json', '.mjs', '.ts', '.tsx'],

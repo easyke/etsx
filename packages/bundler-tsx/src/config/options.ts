@@ -1,7 +1,7 @@
-import Etsx from 'etsx'
 import BaseWebpackConfig from './base'
 import BuildContext from './context'
 
+import clone from 'lodash/clone'
 import path from 'path'
 import webpack from 'webpack'
 import TimeFixPlugin from '../plugins/time-fix-plugin'
@@ -13,95 +13,6 @@ import { BuildOptions } from '@etsx/builder'
 
 const WebpackBar: any = require('webpackbar')
 
-const babelOptions = {
-  presets: [
-    [
-      require('@babel/preset-env').default,
-      {
-        targets: {
-          browsers: ['last 2 versions', 'ie >= 7'],
-        },
-        modules: 'commonjs',
-        useBuiltIns: 'entry',
-        debug: false,
-      },
-    ],
-  ],
-  plugins: [
-    /* ** Stage 0 - Start ** */
-    require('@babel/plugin-proposal-function-bind'),
-    /* ** Stage 0 - End ** */
-
-    /* ** Stage 1 - Start ** */
-    require('@babel/plugin-proposal-export-default-from'),
-    require('@babel/plugin-proposal-logical-assignment-operators'),
-    [
-      require('@babel/plugin-proposal-optional-chaining'), {
-        loose: false,
-      },
-    ],
-    [
-      require('@babel/plugin-proposal-pipeline-operator'), {
-        proposal: 'minimal',
-      },
-    ],
-    [
-      require('@babel/plugin-proposal-nullish-coalescing-operator'), {
-        loose: false,
-      },
-    ],
-    require('@babel/plugin-proposal-do-expressions'),
-    /* ** Stage 1 - End ** */
-
-    /* ** Stage 2 - Start ** */
-    [
-      require('@babel/plugin-proposal-decorators'), {
-        legacy: true,
-      },
-    ],
-    require('@babel/plugin-proposal-function-sent'),
-    require('@babel/plugin-proposal-export-namespace-from'),
-    require('@babel/plugin-proposal-numeric-separator'),
-    require('@babel/plugin-proposal-throw-expressions'),
-    /* ** Stage 2 - End ** */
-
-    /* ** Stage 3 - Start ** */
-    require('@babel/plugin-syntax-dynamic-import'),
-    require('@babel/plugin-syntax-import-meta'),
-    [
-      require('@babel/plugin-proposal-class-properties'), {
-        loose: false,
-      },
-    ],
-    require('@babel/plugin-proposal-json-strings'),
-    /* ** Stage 3 - End ** */
-    [
-      require('@babel/plugin-transform-runtime'), {
-
-        corejs: 2,
-        helpers: true,
-        regenerator: true,
-      },
-    ],
-    [
-      require('@babel/plugin-transform-react-jsx'),
-      {
-        pragma: 'createElement',
-        pragmaFrag: 'Fragment',
-        throwIfNamespace: true,
-        useBuiltIns: false,
-      },
-    ],
-    require('@babel/plugin-transform-react-display-name'),
-    require('../plugins/react-directive.js'),
-  ],
-};
-if (process.env.BABEL_ENV === 'development') {
-  babelOptions.plugins.push(require.resolve('@babel/plugin-transform-react-jsx-source'))
-}
-if (process.env.BABEL_ENV === 'development') {
-  babelOptions.plugins.push(require.resolve('@babel/plugin-transform-react-jsx-self'))
-}
 export class OptionsWebpackConfig extends BaseWebpackConfig {
   public constructor(context: BuildContext) {
     super(context)
@@ -125,7 +36,42 @@ export const getAlias = (context: BuildContext): { [key: string]: string; } => {
     [staticDir]: path.join(dir.src, staticDir),
   };
 }
+export const getBabelOptions = (context: BuildContext): { babelrc?: boolean; presets: any[], plugins: any[]} => {
+  const options = clone(context.buildOptions.babel)
+
+  if (typeof options.presets === 'function') {
+    options.presets = options.presets({
+      isDev: context.options.dev,
+      isDebug: !!context.options.debug,
+      isWeex: context.isWeex,
+      isModern: context.isModern,
+      isClient: !context.isServer,
+      isServer: context.isServer,
+    })
+  }
+  if (!options.babelrc && !options.presets) {
+    const buildTarget = ['server', 'client', 'weex', 'modern'].includes(context.name) ? context.name : 'client'
+    options.presets = [
+      [
+        require.resolve('@etsx/babel-preset-app'),
+        {
+          isDev: context.options.dev,
+          isDebug: false,
+          isModern: context.isModern,
+          buildTarget,
+        },
+      ],
+    ]
+  }
+
+  return options as any
+}
 export const loadRules = (context: BuildContext, rules: webpack.RuleSetRule[]) => {
+  const babelOptions = getBabelOptions(context)
+  if (!Array.isArray(babelOptions.plugins)) {
+    babelOptions.plugins = []
+  }
+  babelOptions.plugins.push(require.resolve('../plugins/react-directive.js'))
   rules.push({
     test: /\.tsx?$/i,
     exclude: /node_modules/,

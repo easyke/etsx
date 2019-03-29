@@ -1,6 +1,6 @@
 import esm from 'esm';
 import Module from 'module';
-import { resolve, join } from 'path';
+import { resolve, join, normalize } from 'path';
 import Etsx, { EtsxModule } from 'etsx';
 import fs from 'graceful-fs';
 import { startsWithRootAlias, startsWithSrcAlias } from '@etsx/utils';
@@ -14,11 +14,18 @@ export class Resolver extends EtsxModule {
     this.resolveAlias = this.resolveAlias.bind(this)
     this.resolveModule = this.resolveModule.bind(this)
     this.requireModule = this.requireModule.bind(this)
+    this.getModulesDirs = this.getModulesDirs.bind(this)
 
     // ESM Loader
     this.esm = esm(module, {})
   }
-
+  getModulesDirs(paths?: string[]): string[] {
+    return Array.from(new Set([
+      join(this.options.dir.root, 'node_modules'),
+      join(this.options.dir.src, 'node_modules'),
+      join(process.cwd(), 'node_modules'),
+    ].filter((p) => fs.lstatSync(p).isDirectory()).concat(paths || []).map(normalize)))
+  }
   resolveModule(path: string): string | void {
     try {
       type Module = { _resolveFilename: (path: string, opt: { paths: string[]}) => string};
