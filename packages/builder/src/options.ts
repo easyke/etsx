@@ -115,10 +115,6 @@ export type Browser = {
    * 类型: Object
    */
   hotMiddleware: WebpackHotMiddleware.Options;
-  hotMiddlewareClient: {
-    ansiColors?: any;
-    overlayStyles?: any;
-  };
   appTemplatePath?: string;
   loaders: {
     /**
@@ -430,7 +426,6 @@ export class BuildOptions {
       },
       devMiddleware: ({} as WebpackDevMiddleware.Options),
       hotMiddleware: {},
-      hotMiddlewareClient: {},
       loaders: {
         file: {},
         fontUrl: { limit: 1000 },

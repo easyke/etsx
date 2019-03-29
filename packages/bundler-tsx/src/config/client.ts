@@ -17,17 +17,15 @@ export class ClientWebpackConfig extends BrowserWebpackConfig {
     const context = new BuildContext(etsx, name)
     super(context)
     const { options: { dir, dev: isDev, router }, browserOptions, buildOptions, isModern } = context
+    const app = [
+      path.resolve(dir.build, 'client.tsx'),
+    ]
     // 编译为类 Node.js 环境可用（使用 Node.js require 加载 chunk）
     this.target = 'web'
     // 在 浏览器 渲染中使用了 node，需要虚拟node的环境
     this.node = false
     // 加入一个入口文件
-    this.entry = {
-      app: [
-        path.resolve(dir.build, 'client.js'),
-      ],
-    }
-
+    this.entry = { app }
     // Small, known and common modules which are usually used project-wise
     // Sum of them may not be more than 244 KiB
 
@@ -120,28 +118,13 @@ export class ClientWebpackConfig extends BrowserWebpackConfig {
       }),
     )
     // 加载 模块热重载 配置
-    const client = browserOptions.hotMiddlewareClient || {}
-    const { ansiColors, overlayStyles, ...others } = client
-    const hotMiddlewareClientOptions = {
-      reload: true,
-      timeout: 30000,
-      ansiColors: JSON.stringify(ansiColors),
-      overlayStyles: JSON.stringify(overlayStyles),
-      ...others,
-      name: this.name,
-    }
-    const clientPath = `${router.base}/__webpack_hmr/${this.name}`
-    const hotMiddlewareClientOptionsStr =
-      `${querystring.stringify(hotMiddlewareClientOptions)}&path=${clientPath}`.replace(/\/\//g, '/')
-
     // 添加热模块加载支持
     if (isDev) {
-      this.entry.app = Array.isArray(this.entry.app) ? this.entry.app : [ this.entry.app ]
-      this.entry.app.unshift(
-        // https://github.com/webpack-contrib/webpack-hot-middleware/issues/53#issuecomment-162823945
-        'eventsource-polyfill',
+      app.unshift(
         // https://github.com/glenjamin/webpack-hot-middleware#config
-        `webpack-hot-middleware/client?${hotMiddlewareClientOptionsStr}`,
+        `webpack-hot-middleware/client?name=${this.name}&reload=true&timeout=30000&path=${
+          router.base
+          }/__webpack_hmr/${this.name}`.replace(/\/\//g, '/'),
       )
     }
   }

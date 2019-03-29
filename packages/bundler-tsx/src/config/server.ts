@@ -10,6 +10,9 @@ export class ServerWebpackConfig extends BrowserWebpackConfig {
     const context = new BuildContext(etsx, 'server')
     super(context)
     const { options: { dir, modulesDir }, lfs, buildOptions } = context
+    const app = [
+      path.resolve(dir.build, 'server.tsx'),
+    ]
     // 编译为类 Node.js 环境可用（使用 Node.js require 加载 chunk）
     this.target = 'node'
     // 在node服务器渲染，不需要虚拟node的环境
@@ -18,11 +21,7 @@ export class ServerWebpackConfig extends BrowserWebpackConfig {
     this.node = false
     // 入口app为服务器文件
     // 加入一个入口文件
-    this.entry = {
-      app: [
-        path.resolve(dir.build, 'server.js'),
-      ],
-    }
+    this.entry = { app }
     this.output.filename = 'server-bundle.js'
     this.output.libraryTarget = 'commonjs2'
     this.optimization = {
