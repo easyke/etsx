@@ -48,7 +48,7 @@
     "mini-css-extract-plugin": "^0.5.0",
     "postcss-cssnext": "^3.1.0",
     "postcss-flexible": "^0.5.5",
-    "postcss-import-resolver": "^1.1.0",
+    "postcss-import-resolver": "^1.2.2",
     "postcss-loader": "^3.0.0",
     "postcss-mpvue-wxss": "^1.0.2",
     "postcss-nested": "^4.1.1",

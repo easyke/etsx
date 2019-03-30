@@ -1,8 +1,7 @@
 import path from 'path';
 import OptionsWebpackConfig from './options';
 import BuildContext from './context'
-
-const createResolver = require('postcss-import-resolver')
+import createResolver from 'postcss-import-resolver'
 
 export class BrowserWebpackConfig extends OptionsWebpackConfig {
   public constructor(context: BuildContext) {
