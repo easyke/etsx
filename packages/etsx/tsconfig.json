@@ -3,6 +3,7 @@
     "baseUrl": ".",
     "paths": { "*": ["types/*"] },
     "strict": true,
+    "sourceMap": true,
     "allowJs": true,
     "noEmit": true,
     "module": "esnext",

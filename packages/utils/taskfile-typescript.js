@@ -1,6 +1,7 @@
 'use strict'
 try {
   const ts = require('typescript')
+  const path = require('path')
   const extname = require('path').extname
   const config = require('./tsconfig.json')
 
@@ -28,6 +29,19 @@ try {
       const result = ts.transpileModule(file.data.toString(), opts)
 
       if (opts.compilerOptions.sourceMap && result.sourceMapText) {
+        if (result.sourceMapText) {
+          try {
+            const t = typeof result.sourceMapText === 'string' ? JSON.parse(result.sourceMapText) : (typeof result.sourceMapText === 'object' ? result.sourceMapText : {})
+            if (Array.isArray(t.sources)) {
+              t.sources = t.sources.map((p) => {
+                const pa = path.normalize((file.dir || '') + '/' + (p || '')).replace(/\\/, '/').split('/').filter(Boolean)
+                return (new Array(pa.length - 1)).fill('..').concat(pa).join('/')
+              })
+            }
+            result.sourceMapText = JSON.stringify(t)
+          } catch (error) {
+          }
+        }
         // add sourcemap to `files` array
         this._.files.push({
           dir: file.dir,
@@ -35,9 +49,6 @@ try {
           data: Buffer.from(JSON.stringify(result.sourceMapText), 'utf8')
         })
       }
-
-      // Workaround for noop.js loading
-      if (file.base === 'next-dev.js') result.outputText = result.outputText.replace('// REPLACE_NOOP_IMPORT', `import('./noop');`)
 
       // update file's data
       file.data = Buffer.from(result.outputText.replace(/process\.env\.__NEXT_VERSION/, `"${require('./package.json').version}"`), 'utf8')

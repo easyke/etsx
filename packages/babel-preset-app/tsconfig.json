@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "sourceMap": true,
     "paths": { "*": ["types/*"] },
     "strict": true,
     "allowJs": true,
