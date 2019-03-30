@@ -2,7 +2,6 @@ import path from 'path'
 import dist from './dist'
 import weex from './weex'
 import { web, wap } from './browser'
-import { miniProgram } from './mini-program'
 import { guardDir, getOptions, isNonEmptyString } from '@etsx/utils'
 export class Dir {
   /**
@@ -81,10 +80,6 @@ export class Dir {
      * weex小程序
      */
     this.weex = weex(options.weex || {}, this.root)
-    /**
-     * 小程序
-     */
-    this.miniProgram = miniProgram(options.miniProgram || {}, this.src)
   }
 }
 export default Dir
