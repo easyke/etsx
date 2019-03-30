@@ -1,5 +1,5 @@
 type fn = (...args: any[]) => any
-export const sequence = <T extends any, R extends any>(tasks: T[], fn: (task: T) => R | Promise<R>): Promise<R[]> => {
+export const sequence = <T extends any, R extends any>(tasks: T[], fn: (task: T) => R | Promise<R>): Promise<R> => {
   return tasks.reduce(
     (promise, task) => promise.then(() => fn(task)),
     (Promise.resolve() as any),

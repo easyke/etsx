@@ -82,7 +82,7 @@ export class Bundler extends BuildModule {
       this.compilers.add(webpack(compilersOption))
     })
     // 判断当前使用并行构建还是队列构建
-    const runner = this.options.dev ? parallel : sequence
+    const runner: <T>(tasks: T[], fn: (task: T) => any | Promise<any>) => Promise<any> = this.options.dev ? parallel : sequence
     // 开始构建
     await runner(Array.from(this.compilers), (compiler) => {
       // 开始构建
@@ -107,7 +107,7 @@ export class Bundler extends BuildModule {
       })
 
       // 因为已经构建完毕，需要重新加载渲染器（如果可用）
-      await this.etsx.callHook('build:resources', this.mfs || this.lfs)
+      await this.etsx.callHook('bundler-tsx:resources', this.mfs || this.lfs)
     })
     // 指定监听的文件系统
     compiler.watchFileSystem = new NodeWatchFileSystem(
@@ -181,7 +181,7 @@ export class Bundler extends BuildModule {
       throw new Error('没有传入name');
     }
 
-    this.devMiddleware.set(name, pify(
+    this.hotMiddleware.set(name, pify(
       webpackHotMiddleware(
         compiler,
         Object.assign(

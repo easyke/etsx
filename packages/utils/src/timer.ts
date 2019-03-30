@@ -24,7 +24,7 @@ export const timeout = function timeout(fn: Promise<any> | (() => Promise<any>),
 export const sleep = function sleep(ms: number) {
   return new Promise((resolve: (value?: {} | PromiseLike<{}> | undefined) => void) => setTimeout(resolve, ms || 0))
 }
-export function deferRun(fn: (...args: any[]) => void, ...args: any[]) {
+export const deferRun = (fn: (...args: any[]) => void, ...args: any[]) => {
   if (typeof setImmediate === 'function') {
     setImmediate(fn)
   } else {
