@@ -6,7 +6,7 @@ import cliSpinners from 'cli-spinners'
 
 const TEXT = Symbol('text')
 const pkg = require('../pkg')
-const version = pkg.version
+const version = process.env.__ETSX_VERSION || pkg.version
 const stripAnsi = require('./strip-ansi.js')
 const stringWidth = require('./string-width.js')
 const Table = require('./table/index.js')

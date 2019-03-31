@@ -35,6 +35,9 @@ try {
             if (Array.isArray(t.sources)) {
               t.sources = t.sources.map((p) => {
                 const pa = path.normalize((file.dir || '') + '/' + (p || '')).replace(/\\/, '/').split('/').filter(Boolean)
+                if (pa.length > 2 && `${pa[0]}.${pa[2]}` === 'packages.src') {
+                  pa.splice(0, 2)
+                }
                 return (new Array(pa.length - 1)).fill('..').concat(pa).join('/')
               })
             }
@@ -51,7 +54,7 @@ try {
       }
 
       // update file's data
-      file.data = Buffer.from(result.outputText.replace(/process\.env\.__NEXT_VERSION/, `"${require('./package.json').version}"`), 'utf8')
+      file.data = Buffer.from(result.outputText.replace(/process\.env\.__ETSX_VERSION/, `"${require('./package.json').version}"`), 'utf8')
     })
   }
 } catch (err) {

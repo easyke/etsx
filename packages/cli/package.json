@@ -18,18 +18,6 @@
   "bin": {
     "etsx": "./bin/etsx"
   },
-  "scripts": {
-    "build": "taskr",
-    "release": "taskr release",
-    "prepublish": "npm run release",
-    "typescript": "tsc --noEmit"
-  },
-  "taskr": {
-    "requires": [
-      "./taskfile-typescript.js",
-      "./taskfile-babel.js"
-    ]
-  },
   "dependencies": {
     "@etsx/builder": "^0.0.1",
     "@etsx/utils": "^0.0.1",
@@ -55,12 +43,6 @@
     "@etsx/bundler-ios": "*",
     "etsx": ">=0.0.1",
     "typescript": "*"
-  },
-  "devDependencies": {
-    "@taskr/clear": "^1.1.0",
-    "@taskr/esnext": "^1.1.0",
-    "@taskr/watch": "^1.1.0",
-    "taskr": "^1.1.0"
   },
   "publishConfig": {
     "access": "public"

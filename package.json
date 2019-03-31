@@ -4,19 +4,20 @@
   "workspaces": [
     "packages/*"
   ],
+  "version": "0.0.1",
   "scripts": {
     "lerna": "lerna",
-    "dev": "lerna run build --stream --parallel || yarn",
+    "dev": "taskr",
+    "release": "taskr release",
     "testonly": "jest",
     "testall": "yarn check && yarn run testonly -- --coverage --forceExit --runInBand --reporters=default --reporters=jest-junit",
     "pretest": "yarn run lint",
     "test": "yarn run testall || yarn run testall",
     "coveralls": "cat ./test/coverage/lcov.info | coveralls",
-    "lint": "lerna run typescript && standard && standard --parser typescript-eslint-parser --plugin typescript packages/**/*.ts",
+    "lint": "standard && standard --parser typescript-eslint-parser --plugin typescript packages/**/*.ts",
     "lint-fix": "standard --fix && standard --fix --parser typescript-eslint-parser --plugin typescript packages/**/*.ts",
     "prettier": "prettier --single-quote --no-semi --write examples/**/*.js && yarn run lint-fix",
-    "typescript": "lerna run typescript",
-    "prepublish": "lerna run prepublish",
+    "prepublish": "npm run release",
     "publish-canary": "lerna version prerelease --preid canary --force-publish && release --pre",
     "publish-stable": "lerna version --force-publish",
     "lint-staged": "lint-staged"
@@ -41,6 +42,12 @@
       "git add"
     ]
   },
+  "taskr": {
+    "requires": [
+      "./taskfile-typescript.js",
+      "./taskfile-babel.js"
+    ]
+  },
   "standard": {
     "parser": "babel-eslint",
     "ignore": [
@@ -58,7 +65,6 @@
     "@babel/core": "^7.4.0",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@taskr/clear": "^1.1.0",
-    "@taskr/esnext": "^1.1.0",
     "@taskr/watch": "^1.1.0",
     "@types/lodash": "^4.14.123",
     "@typescript-eslint/eslint-plugin": "^1.5.0",
