@@ -9,7 +9,7 @@ import ModuleContainer from './module';
 
 export const ready = Symbol('ready')
 export const initialized = Symbol('initialized')
-const version = '0.0.1'
+const version = process.env.__ETSX_VERSION || '0.0.1'
 
 export class Etsx extends Hookable {
   render: application.App;
