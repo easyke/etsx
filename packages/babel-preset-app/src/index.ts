@@ -1,3 +1,4 @@
+import path from 'path'
 export type targets = any;
 export type configPath = any;
 export type polyfills = string[];
@@ -7,14 +8,17 @@ export type options = {
   isDebug?: boolean;
   buildTarget: 'server' | 'client' | 'weex' | 'modern';
   // 何时true，编译类属性以使用赋值表达式而不是Object.defineProperty。
+  spec?: any;
   loose?: boolean;
   corejs?: 2 | 3 | number;
   useBuiltIns?: false | 'entry' | 'usage';
   // 启用将ES6模块语法转换为其他模块类型。
-  modules?: 'amd' | 'umd' | 'systemjs' | 'commonjs' | 'cjs' | 'auto' | false;
+  modules?: 'amd' | 'umd' | 'systemjs' | 'commonjs' | 'cjs' | 'auto' | boolean;
   polyfills?: polyfills;
   ignoreBrowserslistConfig?: boolean;
   configPath?: configPath;
+  include?: any;
+  exclude?: any;
   targets?: targets;
   // 默认情况下，此预设将运行目标环境所需的所有变换。
   // 如果要强制运行所有转换，请启用此选项，
@@ -22,6 +26,8 @@ export type options = {
   forceAllTransforms?: boolean;
   // Use the legacy (stage 1) decorators syntax and behavior.
   decoratorsLegacy?: boolean;
+  shippedProposals?: any;
+  decoratorsBeforeExport?: any;
 };
 
 export const defaultPolyfills = [
@@ -54,6 +60,7 @@ export default (context: any, options: options = { buildTarget: 'client' }) => {
   const {
     buildTarget,
     corejs = 3,
+    spec,
     loose = false,
     isDev = false,
     isDebug = false,
@@ -61,15 +68,19 @@ export default (context: any, options: options = { buildTarget: 'client' }) => {
     polyfills: userPolyfills,
     ignoreBrowserslistConfig = isModern,
     configPath,
+    include,
+    exclude,
+    shippedProposals,
     forceAllTransforms,
+    decoratorsBeforeExport,
     decoratorsLegacy,
   } = options
-  let modules = options.modules || false
 
+  let modules = options.modules || false
   let targets = options.targets
-  if (isModern === true) {
+  if (modules === true) {
     targets = { esmodules: true }
-  } else if (targets === undefined) {
+  } else if (targets === void 0) {
     if (buildTarget === 'weex') {
       modules = 'commonjs'
       targets = { node: 'current' }
@@ -96,15 +107,18 @@ export default (context: any, options: options = { buildTarget: 'client' }) => {
   presets.push([
     require.resolve('@babel/preset-env'),
     {
+      spec,
       loose,
-      corejs,
+      corejs: useBuiltIns !== false ? corejs : false,
       modules,
       targets,
       useBuiltIns,
-      forceAllTransforms,
       ignoreBrowserslistConfig,
-      exclude: polyfills,
+      include,
+      // exclude: polyfills.concat(exclude || []),
       debug: isDebug,
+      shippedProposals,
+      forceAllTransforms,
     },
   ])
   plugins.push(
@@ -136,6 +150,7 @@ export default (context: any, options: options = { buildTarget: 'client' }) => {
     /* ** Stage 2 - Start ** */
     [
       require.resolve('@babel/plugin-proposal-decorators'), {
+        decoratorsBeforeExport,
         legacy: decoratorsLegacy !== false,
       },
     ],
@@ -157,9 +172,11 @@ export default (context: any, options: options = { buildTarget: 'client' }) => {
     /* ** Stage 3 - End ** */
     [
       require.resolve('@babel/plugin-transform-runtime'), {
-        corejs,
-        helpers: true,
         regenerator: useBuiltIns !== 'usage',
+        corejs: useBuiltIns !== false ? corejs : false,
+        helpers: useBuiltIns === 'usage',
+        useESModules: true,
+        absoluteRuntime: path.dirname(require.resolve('@babel/runtime/package.json')),
       },
     ],
     [

@@ -125,6 +125,7 @@ export class BaseWebpackConfig implements webpack.Configuration {
      * see: https://webpack.docschina.org/configuration/resolve/#resolveloader
      */
     this.resolveLoader = {
+      extensions: ['.js', '.jsx', '.json', '.mjs', '.ts', '.tsx'],
       modules: webpackModulesDir,
     }
 

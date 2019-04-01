@@ -16,7 +16,8 @@
   ],
   "typings": "./index.d.ts",
   "dependencies": {
-    "@etsx/utils": "0.0.1",
+    "@etsx/utils": "^0.0.1",
+    "@etsx/babel-preset-app": "^0.0.1",
     "@types/webpack": "^4.4.25",
     "@types/hard-source-webpack-plugin": "^1.0.0",
     "@types/webpack-dev-middleware": "^2.0.2",
@@ -31,6 +32,7 @@
     "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.4",
     "caniuse-lite": "^1.0.30000951",
+    "core-js": "^3.0.0",
     "es3ify-webpack-plugin": "^0.1.0",
     "html-webpack-plugin": "^4.0.0-beta.5",
     "mini-css-extract-plugin": "^0.5.0",

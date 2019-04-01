@@ -8,6 +8,7 @@ import BundleAnalyzer from 'webpack-bundle-analyzer'
 import TerserWebpackPlugin from 'terser-webpack-plugin'
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import ClientAssetManifestPlugin from '../plugins/client-asset-manifest'
 
 const es3ifyPlugin = require('es3ify-webpack-plugin')
 
@@ -106,6 +107,8 @@ export class ClientWebpackConfig extends BrowserWebpackConfig {
       // 转 es3 支持 ie
       this.plugins.push(new es3ifyPlugin())
     }
+
+    this.plugins.push(new ClientAssetManifestPlugin())
 
     const appTemplatePath = typeof browserOptions.appTemplatePath === 'string' ? browserOptions.appTemplatePath : path.resolve(dir.build, 'views/app.template.html')
     // 添加插件
