@@ -34,7 +34,7 @@ try {
             const t = typeof result.sourceMapText === 'string' ? JSON.parse(result.sourceMapText) : (typeof result.sourceMapText === 'object' ? result.sourceMapText : {})
             if (Array.isArray(t.sources)) {
               t.sources = t.sources.map((p) => {
-                const pa = path.normalize((file.dir || '') + '/' + (p || '')).replace(/\\/, '/').split('/').filter(Boolean)
+                const pa = path.normalize((file.dir || '') + '/' + (p || '')).replace(/\\/g, '/').split('/').filter(Boolean)
                 if (pa.length > 2 && `${pa[0]}.${pa[2]}` === 'packages.src') {
                   pa.splice(0, 2)
                 }

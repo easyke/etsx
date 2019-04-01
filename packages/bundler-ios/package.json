@@ -23,8 +23,8 @@
     "user-home": "^2.0.0"
   },
   "peerDependencies": {
-    "@etsx/builder": "^0.0.1",
-    "etsx": ">=0.0.1",
+    "@etsx/builder": "*",
+    "etsx": "*",
     "lodash": "^4.17.11",
     "typescript": "*"
   },

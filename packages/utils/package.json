@@ -10,6 +10,7 @@
   "homepage": "https://etsx.easyke.top",
   "files": [
     "src",
+    "data",
     "dist",
     "types",
     "index.d.ts"

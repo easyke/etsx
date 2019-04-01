@@ -139,13 +139,14 @@ export const loadPlugins = (context: BuildContext, plugins: webpack.Plugin[]) =>
 
 export const getOutput = (context: BuildContext): webpack.Output => {
   const { isWeex, isServer, options } = context;
+  const publicPath = `${isUrl(options.publicPath)
+    ? options.publicPath
+    : urlJoin(options.router.base, options.publicPath)}\/${isWeex ? 'weex' : 'browser'}\/`.replace(/\\/g, '/').replace(/\/\//g, '/');
   return {
     path: isWeex ? options.dir.dist.weex : path.resolve(options.dir.build, 'dist', isServer ? 'server' : 'client'),
     filename: getFileName('app', context),
     chunkFilename: getFileName('chunk', context),
-    publicPath: isUrl(options.publicPath)
-      ? options.publicPath
-      : urlJoin(options.router.base, options.publicPath),
+    publicPath,
   }
 }
 

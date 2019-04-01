@@ -40,8 +40,6 @@
     "source-map-support": "^0.5.11"
   },
   "peerDependencies": {
-    "@etsx/bundler-ios": "*",
-    "etsx": ">=0.0.1",
     "typescript": "*"
   },
   "publishConfig": {
