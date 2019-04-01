@@ -1,6 +1,6 @@
 {
   "name": "@etsx/bundler-ios",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "etsx bundler ios",
   "main": "./dist/index.js",
   "types": "./index.d.js",
@@ -15,7 +15,7 @@
     "index.d.ts"
   ],
   "dependencies": {
-    "@etsx/utils": "0.0.1",
+    "@etsx/utils": "0.0.2",
     "@types/chalk": "^2.2.0",
     "@types/user-home": "^2.0.0",
     "chalk": "^2.4.2",

@@ -1,6 +1,6 @@
 {
   "name": "@etsx/bundler-android",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "etsx bundler android",
   "main": "./dist/index.js",
   "types": "./index.d.js",
@@ -15,13 +15,13 @@
     "index.d.ts"
   ],
   "dependencies": {
-    "@etsx/utils": "^0.0.1",
+    "@etsx/utils": "0.0.2",
     "appium-adb": "^7.6.1"
   },
   "peerDependencies": {
+    "@etsx/builder": "^0.0.1",
     "etsx": ">=0.0.1",
     "lodash": "^4.17.11",
-    "@etsx/builder": "^0.0.1",
     "typescript": "*"
   },
   "publishConfig": {

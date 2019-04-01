@@ -1,6 +1,6 @@
 {
   "name": "@etsx/cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "etsx cli",
   "main": "./dist/index.js",
   "types": "./index.d.js",
@@ -19,9 +19,9 @@
     "etsx": "./bin/etsx"
   },
   "dependencies": {
-    "@etsx/builder": "^0.0.1",
-    "@etsx/utils": "^0.0.1",
-    "@etsx/listener": "^0.0.1",
+    "@etsx/builder": "0.0.2",
+    "@etsx/listener": "0.0.2",
+    "@etsx/utils": "0.0.2",
     "@types/chalk": "^2.2.0",
     "@types/commander": "^2.12.2",
     "@types/detect-port": "^1.1.0",
@@ -29,10 +29,10 @@
     "@types/inquirer": "^6.0.0",
     "@types/ip": "^1.1.0",
     "@types/semver": "^5.5.0",
-    "etsx": "^0.0.1",
     "chalk": "^2.4.2",
     "commander": "^2.19.0",
     "detect-port": "^1.3.0",
+    "etsx": "0.0.2",
     "graceful-fs": "^4.1.15",
     "inquirer": "^6.2.2",
     "ip": "^1.1.5",

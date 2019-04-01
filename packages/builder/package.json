@@ -1,6 +1,6 @@
 {
   "name": "@etsx/builder",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "etsx builder",
   "main": "./dist/index.js",
   "types": "./index.d.js",
@@ -15,10 +15,10 @@
     "index.d.ts"
   ],
   "dependencies": {
-    "@etsx/bundler-android": "^0.0.1",
-    "@etsx/bundler-ios": "^0.0.1",
-    "@etsx/bundler-tsx": "^0.0.1",
-    "@etsx/utils": "^0.0.1",
+    "@etsx/bundler-android": "0.0.2",
+    "@etsx/bundler-ios": "0.0.2",
+    "@etsx/bundler-tsx": "0.0.2",
+    "@etsx/utils": "0.0.2",
     "@types/glob": "^7.1.1",
     "chokidar": "^2.1.5",
     "glob": "^7.1.3",

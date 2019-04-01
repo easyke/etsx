@@ -1,6 +1,6 @@
 {
   "name": "@etsx/fs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "etsx fs",
   "main": "./dist/index.js",
   "types": "./index.d.js",
@@ -16,7 +16,7 @@
   ],
   "typings": "./index.d.ts",
   "dependencies": {
-    "@etsx/utils": "^0.0.1"
+    "@etsx/utils": "0.0.2"
   },
   "peerDependencies": {
     "typescript": "*"
