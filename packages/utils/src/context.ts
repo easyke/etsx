@@ -1,3 +1,4 @@
+import { listener } from '@etsx/listener'
 
 export type global = string | ((globalName: string) => string);
 export type globals = {
@@ -9,7 +10,7 @@ export type globals = {
   readyCallback: global;
   loadedCallback: global;
 }
-export function getContext<Q extends any, S extends any>(req: Q, res: S): { req: Q, res: S } {
+export function getContext<Q extends listener.Request, S extends listener.Response>(req: Q, res: S): { req: Q, res: S } {
   return { req, res }
 }
 export const determineGlobals = function determineGlobals(globalName: string = 'etsx', globals: globals) {

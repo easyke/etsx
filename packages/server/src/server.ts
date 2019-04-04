@@ -7,7 +7,7 @@ import { renderAndGetWindow, jsdomOpts } from './jsdom'
 import etsxMiddleware from './middleware/etsx'
 import errorMiddleware from './middleware/error'
 import modernMiddleware from './middleware/modern'
-import Renderer from './renderer';
+import Renderer, { resources } from './renderer';
 import serveStatic from 'serve-static';
 
 const servePlaceholder = require('serve-placeholder')
@@ -28,6 +28,7 @@ export class Server extends EtsxModule {
   renderer?: Renderer;
   [devMiddleware]?: MiddlewareMap;
   [hotMiddleware]?: MiddlewareMap;
+  resources: resources;
   /**
    * 构造函数
    * @param {Object} etsx
@@ -178,7 +179,7 @@ export class Server extends EtsxModule {
     // 最后使用项目中间件
     this.useMiddleware(etsxMiddleware({
       options: this.options,
-      project: this.etsx,
+      etsx: this.etsx,
       renderRoute: this.renderRoute.bind(this),
       resources: this.resources,
     }))

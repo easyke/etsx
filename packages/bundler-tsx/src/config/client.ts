@@ -1,14 +1,12 @@
 import Etsx from 'etsx';
 import path from 'path';
 import webpack from 'webpack';
-import querystring from 'querystring';
 import BuildContext from './context'
 import BrowserWebpackConfig from './browser'
 import BundleAnalyzer from 'webpack-bundle-analyzer'
 import TerserWebpackPlugin from 'terser-webpack-plugin'
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
-import ClientAssetManifestPlugin from '../plugins/client-asset-manifest'
+import ClientAssetManifestPlugin from '../plugins/etsx/client'
 
 const es3ifyPlugin = require('es3ify-webpack-plugin')
 
@@ -19,7 +17,7 @@ export class ClientWebpackConfig extends BrowserWebpackConfig {
     super(context)
     const { options: { dir, dev: isDev, router }, browserOptions, buildOptions, isModern } = context
     const app = [
-      path.resolve(dir.build, 'client.tsx'),
+      path.resolve(dir.build, 'client.js'),
     ]
     // 编译为类 Node.js 环境可用（使用 Node.js require 加载 chunk）
     this.target = 'web'
@@ -108,18 +106,10 @@ export class ClientWebpackConfig extends BrowserWebpackConfig {
       this.plugins.push(new es3ifyPlugin())
     }
 
-    this.plugins.push(new ClientAssetManifestPlugin())
+    this.plugins.push(new ClientAssetManifestPlugin({
+      filename: `../server/${this.name}.manifest.json`,
+    }))
 
-    const appTemplatePath = typeof browserOptions.appTemplatePath === 'string' ? browserOptions.appTemplatePath : path.resolve(dir.build, 'views/app.template.html')
-    // 添加插件
-    this.plugins.push(
-      new HtmlWebpackPlugin({
-        filename: '../server/index.ssr.html',
-        template: appTemplatePath,
-        minify: browserOptions.html.minify,
-        inject: false, // Resources will be injected using bundleRenderer
-      }),
-    )
     // 加载 模块热重载 配置
     // 添加热模块加载支持
     if (isDev) {

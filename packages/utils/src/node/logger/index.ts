@@ -5,8 +5,7 @@ import cliCursor from 'cli-cursor'
 import cliSpinners from 'cli-spinners'
 
 const TEXT = Symbol('text')
-const pkg = require('../pkg')
-const version = process.env.__ETSX_VERSION || pkg.version
+const version = process.env.__ETSX_VERSION || '0.0.0'
 const stripAnsi = require('./strip-ansi.js')
 const stringWidth = require('./string-width.js')
 const Table = require('./table/index.js')
@@ -152,7 +151,7 @@ class Logger implements ILogger {
     return this.stopAndPersist(chalk.blue(this.prefix) + ' ' + this.symbols.info, format.apply(format, arguments as any))
   }
 
-  debug(message?: any) {
+  debug(message?: any, ...optionalParams: any[]) {
     return this.info.apply(this, arguments as any)
   }
 

@@ -137,6 +137,18 @@ export type Browser = {
     scss: {};
     stylus: {};
   };
+  /**
+   * 手机端框架
+   */
+  wapFramework: string;
+  /**
+   * 电脑端框架
+   */
+  webFramework: string;
+  /**
+   * 驱动框架,false 保持和对应端一致
+   */
+  bootFramework: string | false;
 };
 
 export class BuildOptions {
@@ -271,6 +283,10 @@ export class BuildOptions {
   transpile: Array<string | RegExp>;
   buildExtend: string[];
   /**
+   * 类react框架
+   */
+  aysncModules: string[];
+  /**
    * 构造函数
    * @param options 配置项
    */
@@ -334,7 +350,7 @@ export class BuildOptions {
     // uglifyjs-webpack-plugin 和 cache-loader 的缓存
     this.cache = typeof options.cache === 'boolean' ? options.cache : false;
     this.hardSource = typeof options.hardSource === 'boolean' ? options.hardSource : false;
-    // 监听
+    // 监听;
     this.watch = Array.isArray(options.watch) ? options.watch : [];
     //
     this.watchers = defaultsDeepClone<this['watchers']>(options.watchers, {})
@@ -365,6 +381,9 @@ export class BuildOptions {
       watch: [],
       styleResources: {},
       plugins: [],
+      wapFramework: 'rax',
+      webFramework: 'anujs',
+      bootFramework: 'anujs',
       html: {
         minify: {
           /**
@@ -467,6 +486,8 @@ export class BuildOptions {
     this.terser = defaultsDeepClone<this['terser']>(options.optimization, {})
     this.optimizeCSS = defaultsDeepClone<this['optimizeCSS']>(options.optimization || {}, {})
     this.buildExtend = Array.isArray(options.buildExtend) ? options.buildExtend : [];
+    // 框架
+    this.aysncModules = Array.isArray(options.aysncModules) ? options.aysncModules : ['anujs', 'rax', 'driver-dom']
     Object.assign(this, {
       // 后续需要完善的
       postcss: {

@@ -1,5 +1,5 @@
 import { logger } from './logger'
-import { sequence } from './task'
+import { sequence } from '../app/task'
 
 const hooks = Symbol('hooks')
 

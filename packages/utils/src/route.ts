@@ -1,6 +1,6 @@
 import path from 'path'
 import get from 'lodash/get'
-import { logger } from './logger'
+import { logger } from './node/logger'
 
 // Guard dir1 from dir2 which can be indiscriminately removed
 // 保护dir1来自dir2，可以不加选择地删除

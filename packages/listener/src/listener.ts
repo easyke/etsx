@@ -35,7 +35,7 @@ export type ListenOptions = {
   hostname?: listen['host'];
 } & listen
 
-export type next = () => void;
+export type next = (err?: any) => void;
 export type FListenOptions = (listener: Listener) => number | string | ListenOptions | undefined;
 export type RequestListener = (req: Request, res: Response, next: next) => void;
 export type WebSocketListener = (ws: WebSocket, req: Request, next: next) => void;

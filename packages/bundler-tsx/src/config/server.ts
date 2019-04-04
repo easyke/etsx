@@ -4,6 +4,7 @@ import BuildContext from './context'
 import BrowserWebpackConfig from './browser'
 import escapeRegExp from 'lodash/escapeRegExp'
 import nodeExternals from 'webpack-node-externals'
+import ServerAssetManifestPlugin from '../plugins/etsx/server'
 
 export class ServerWebpackConfig extends BrowserWebpackConfig {
   public constructor(etsx: Etsx) {
@@ -11,12 +12,12 @@ export class ServerWebpackConfig extends BrowserWebpackConfig {
     super(context)
     const { options: { dir, modulesDir }, lfs, buildOptions } = context
     const app = [
-      path.resolve(dir.build, 'server.tsx'),
+      path.resolve(dir.build, 'server.js'),
     ]
     // 编译为类 Node.js 环境可用（使用 Node.js require 加载 chunk）
     this.target = 'node'
     // 在node服务器渲染，不需要虚拟node的环境
-    this.devtool = 'inline-cheap-module-source-map'
+    this.devtool = 'cheap-module-source-map'
     // 在node服务器渲染，不需要虚拟node的环境
     this.node = false
     // 入口app为服务器文件
@@ -38,6 +39,9 @@ export class ServerWebpackConfig extends BrowserWebpackConfig {
        */
       maxAssetSize: Infinity,
     }
+    this.plugins.push(new ServerAssetManifestPlugin({
+      filename: `../server/${this.name}.manifest.json`,
+    }))
     if (Array.isArray(this.externals)) {
       const whitelist: nodeExternals.WhitelistOption[] = [
         /\.css$/,

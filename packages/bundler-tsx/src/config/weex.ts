@@ -11,13 +11,15 @@ export class WeexWebpackConfig extends OptionsWebpackConfig {
     const { options: { dir } } = context
     // 编译为类 Node.js 环境可用（使用 Node.js require 加载 chunk）
     this.target = 'node'
+    // 在node服务器渲染，不需要虚拟node的环境
+    this.devtool = 'inline-cheap-module-source-map'
     // 配置名称，加载多个配置时使用。
     this.name = 'weex'
 
     // 加入一个入口文件
     this.entry = {
       index: [
-        path.resolve(dir.build, 'weex.tsx'),
+        path.resolve(dir.build, 'weex.js'),
       ],
     }
     this.optimization = {

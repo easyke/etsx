@@ -107,6 +107,7 @@ export class Bundler extends BuildModule {
       })
 
       // 因为已经构建完毕，需要重新加载渲染器（如果可用）
+      await this.etsx.callHook('build:resources', this.mfs || this.lfs)
       await this.etsx.callHook('bundler-tsx:resources', this.mfs || this.lfs)
     })
     // 指定监听的文件系统
@@ -116,7 +117,7 @@ export class Bundler extends BuildModule {
     // 输入文件系统使用本地文件系统
     compiler.inputFileSystem = this.lfs
     // 输出文件系统使用本地文件系统
-    compiler.outputFileSystem = this.lfs
+    compiler.outputFileSystem = this.options.dev ? this.mfs : this.lfs
 
     if (this.options.dev) {
       await new Promise((resolve, reject) => {
