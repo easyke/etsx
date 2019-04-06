@@ -4,6 +4,7 @@ module.exports = {
     yield task.start('release')
     yield task.watch('packages/etsx/src/**/*.+(js|ts|tsx)', 'etsx')
     yield task.watch('packages/server/src/**/*.+(js|ts|tsx)', '@etsx/server')
+    yield task.watch('packages/renderer/src/**/*.+(js|ts|tsx)', '@etsx/renderer')
     yield task.watch('packages/listener/src/**/*.+(js|ts|tsx)', '@etsx/listener')
     yield task.watch('packages/utils/src/**/*.+(js|ts|tsx)', '@etsx/utils')
     yield task.watch('packages/cli/src/**/*.+(js|ts|tsx)', '@etsx/cli')
@@ -20,6 +21,7 @@ module.exports = {
   * clear (task) {
     yield task.clear('packages/etsx/dist')
     yield task.clear('packages/server/dist')
+    yield task.clear('packages/renderer/dist')
     yield task.clear('packages/listener/dist')
     yield task.clear('packages/utils/dist')
     yield task.clear('packages/cli/dist')
@@ -34,6 +36,7 @@ module.exports = {
     yield task.parallel([
       'etsx',
       '@etsx/server',
+      '@etsx/renderer',
       '@etsx/listener',
       '@etsx/utils',
       '@etsx/cli',
@@ -52,6 +55,10 @@ module.exports = {
   * '@etsx/server' (task) {
     yield task.source('packages/server/src/**/*.+(js|ts|tsx)').typescript({ module: 'commonjs' }).target('packages/server/dist/')
     notify('Compiled @etsx/server files')
+  },
+  * '@etsx/renderer' (task) {
+    yield task.source('packages/renderer/src/**/*.+(js|ts|tsx)').typescript({ module: 'commonjs' }).target('packages/renderer/dist/')
+    notify('Compiled @etsx/renderer files')
   },
 
   * '@etsx/listener' (task) {

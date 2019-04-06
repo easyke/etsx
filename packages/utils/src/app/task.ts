@@ -10,6 +10,24 @@ export const parallel = <T extends any, R extends any>(tasks: T[], fn: (task: T)
   return Promise.all(tasks.map(fn))
 }
 type onFn = null | void | string | number | object | Array<null | void | string | number | object>;
+
+export const createPromiseCallback = <R = any>(): {
+  promise: Promise<R>;
+  cb: (err: any, res?: R) => void;
+} => {
+  let resolve: (value?: R | PromiseLike<R>) => void
+  let reject: (reason?: any) => void
+  const promise: Promise<R> = new Promise((_resolve, _reject) => {
+    resolve = _resolve
+    reject = _reject
+  })
+  const cb = (err: any, res?: R) => {
+    if (err) return reject(err)
+    resolve(res)
+  }
+  return { promise, cb }
+}
+
 export const chainFn = <B extends onFn, BR extends any, FR extends any>(base: B | ((...args: any[]) => BR), fn: (...args: any[]) => FR): B | ((...args: any[]) => (BR | FR)) => {
   /* istanbul ignore if */
   if (typeof fn !== 'function') {

@@ -396,6 +396,10 @@ export class Builder extends BuildModule {
     // -- Templates --
     const templatesFiles = Array.from(this.template.files)
 
+    const aysncModules = (Array.isArray(this.buildOptions.aysncModules) ? this.buildOptions.aysncModules : []).concat(...Object.keys(this.options.frameworks).map((key) => this.options.frameworks[key].aysncModules))
+    const renderToDoms = Object.keys(this.options.frameworks).map((key) => [key, this.options.frameworks[key].renderToDom])
+    const getComponents = Object.keys(this.options.frameworks).map((key) => [key, this.options.frameworks[key].getComponent])
+    const createElements = Object.keys(this.options.frameworks).map((key) => [key, this.options.frameworks[key].createElement])
     const templateVars = {
       options: this.options,
       extensions: this.options.extensions
@@ -417,7 +421,10 @@ export class Builder extends BuildModule {
       globalName: this.options.globalName,
       globals: determineGlobals(this.options.globalName, this.options.globals),
       css: this.options.css,
-      aysncModules: this.buildOptions.aysncModules,
+      aysncModules,
+      renderToDoms,
+      getComponents,
+      createElements,
       wapFramework: this.buildOptions.browser.wapFramework,
       webFramework: this.buildOptions.browser.webFramework,
       bootFramework: this.buildOptions.browser.bootFramework,

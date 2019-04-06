@@ -381,7 +381,7 @@ export class BuildOptions {
       watch: [],
       styleResources: {},
       plugins: [],
-      wapFramework: 'rax',
+      wapFramework: 'raxjs',
       webFramework: 'anujs',
       bootFramework: 'anujs',
       html: {
@@ -487,7 +487,7 @@ export class BuildOptions {
     this.optimizeCSS = defaultsDeepClone<this['optimizeCSS']>(options.optimization || {}, {})
     this.buildExtend = Array.isArray(options.buildExtend) ? options.buildExtend : [];
     // 框架
-    this.aysncModules = Array.isArray(options.aysncModules) ? options.aysncModules : ['anujs', 'rax', 'driver-dom']
+    this.aysncModules = Array.isArray(options.aysncModules) ? options.aysncModules : []
     Object.assign(this, {
       // 后续需要完善的
       postcss: {

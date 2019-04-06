@@ -42,7 +42,7 @@ export class Render {
     this.staticPrefix = typeof options.staticPrefix !== 'undefined' ? options.staticPrefix : true
     this.dist = options.dist || {}
     this.static = options.static || {}
-    this.compressor = options.compressor || {threshold: 0}
+    this.compressor = options.compressor || { threshold: 0 }
     this.fallback = {
       dist: {},
       static: defaultsDeepClone<servePlaceholderOptions>((options.fallback && options.fallback.static) || {}, {

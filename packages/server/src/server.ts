@@ -2,12 +2,12 @@ import http from 'http'
 import path from 'path'
 import { Etsx, EtsxModule } from 'etsx'
 import { createApp, application } from '@etsx/listener'
-import { logger, isUrl, determineGlobals } from '@etsx/utils'
+import { logger, determineGlobals } from '@etsx/utils'
 import { renderAndGetWindow, jsdomOpts } from './jsdom'
 import etsxMiddleware from './middleware/etsx'
 import errorMiddleware from './middleware/error'
 import modernMiddleware from './middleware/modern'
-import Renderer, { resources } from './renderer';
+import Renderer, { renderer } from '@etsx/renderer';
 import serveStatic from 'serve-static';
 
 const servePlaceholder = require('serve-placeholder')
@@ -25,10 +25,11 @@ type MiddlewareMap = Map<string, MiddlewarePromise>;
 export class Server extends EtsxModule {
   globals: { [key: string]: string };
   app: application.App;
-  renderer?: Renderer;
+  renderer: Renderer;
   [devMiddleware]?: MiddlewareMap;
   [hotMiddleware]?: MiddlewareMap;
-  resources: resources;
+  renderRoute: Renderer['renderRoute'];
+  loadResources: Renderer['loadResources'];
   /**
    * 构造函数
    * @param {Object} etsx
@@ -38,12 +39,22 @@ export class Server extends EtsxModule {
 
     this.globals = determineGlobals(this.options.globalName, this.options.globals)
 
-    // Runtime shared resources
-    // 运行时共享资源
-    this.resources = {}
-
-    // 创建新的连接实例
+    /**
+     * 创建新的连接实例
+     */
     this.app = createApp()
+    /**
+     * 初始化渲染器
+     */
+    this.renderer = new Renderer(etsx)
+    /**
+     * 渲染路由
+     */
+    this.renderRoute = this.renderer.renderRoute.bind(this)
+    /**
+     * 加载资源
+     */
+    this.loadResources = this.renderer.loadResources.bind(this)
   }
   /**
    * 准备就绪
@@ -52,8 +63,6 @@ export class Server extends EtsxModule {
     // 调用渲染前的钩子
     await this.etsx.callHook('render:before', this, this.options.render)
 
-    // 初始化渲染器
-    this.renderer = new Renderer(this)
     await this.renderer.ready()
 
     // 设置project中间件
@@ -254,27 +263,6 @@ export class Server extends EtsxModule {
     }
   }
   /**
-   * 渲染路由
-   * @param {String} url 带渲染的路由路径
-   * @param {Object} context 指定的上下文对象，可用的属性键： req 和 res
-   * @return {Promise}
-   * {
-   *   html: String,
-   *   error: null|Object,
-   *   redirected: false|Object
-   * }
-   */
-  renderRoute() {
-    return this.renderer.renderRoute.apply(this.renderer, arguments)
-  }
-  /**
-   * 加载资源
-   * @param {*} fs
-   */
-  loadResources() {
-    return this.renderer.loadResources.apply(this.renderer, arguments)
-  }
-  /**
    * 渲染指定url并获取对应的window对象。
    * @param {*} url
    * @param {*} opts
@@ -284,6 +272,9 @@ export class Server extends EtsxModule {
       loadedCallback: this.globals.loadedCallback,
       globals: this.globals,
     })
+  }
+  get resources(): renderer.resources {
+    return this.renderer.resources
   }
   get devMiddleware() {
     if (!this[devMiddleware]) {

@@ -1,0 +1,32 @@
+{
+  "name": "@etsx/renderer",
+  "version": "0.0.2",
+  "description": "etsx renderer",
+  "main": "./dist/index.js",
+  "types": "./index.d.js",
+  "license": "MIT",
+  "repository": "easyke/etsx.js",
+  "bugs": "https://github.com/easyke/etsx.js/issues",
+  "homepage": "https://etsx.easyke.top",
+  "files": [
+    "src",
+    "dist",
+    "types",
+    "index.d.ts"
+  ],
+  "dependencies": {
+    "@types/resolve": "0.0.8",
+    "@etsx/utils": "0.0.2",
+    "resolve": "1.10.0"
+  },
+  "peerDependencies": {
+    "etsx": "*",
+    "typescript": "*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">= 8.0.0"
+  }
+}
