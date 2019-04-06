@@ -51,6 +51,7 @@
   "standard": {
     "parser": "babel-eslint",
     "ignore": [
+      "packages/etsx-browser-weex-app/template/config.js",
       "packages/**/*.ts",
       "**/*.d.ts",
       "**/node_modules/**",
