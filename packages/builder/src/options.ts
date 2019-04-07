@@ -148,7 +148,7 @@ export type Browser = {
   /**
    * 驱动框架,false 保持和对应端一致
    */
-  bootFramework: string | false;
+  headFramework: string | false;
 };
 
 export class BuildOptions {
@@ -383,7 +383,7 @@ export class BuildOptions {
       plugins: [],
       wapFramework: 'raxjs',
       webFramework: 'anujs',
-      bootFramework: 'anujs',
+      headFramework: 'anujs',
       html: {
         minify: {
           /**

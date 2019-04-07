@@ -421,7 +421,7 @@ export class Builder extends BuildModule {
       aysncModules,
       wapFramework: this.buildOptions.browser.wapFramework,
       webFramework: this.buildOptions.browser.webFramework,
-      bootFramework: this.buildOptions.browser.bootFramework,
+      headFramework: this.buildOptions.browser.headFramework,
       plugins: this.plugins,
       appPath: './App.js',
       ignorePrefix: this.options.ignorePrefix,
