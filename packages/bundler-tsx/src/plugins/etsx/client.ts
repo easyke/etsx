@@ -67,8 +67,7 @@ export class EtsxSSRClientAssetManifestPlugin {
           if (!chunk || !chunk.files) {
             return
           }
-          const id = m.identifier.replace(/\s\w+$/, '') // remove appended hash
-          const files = assetManifestMap.modules[hash(id)] = chunk.files.map(fileToIndex)
+          const files = assetManifestMap.modules[m.id] = chunk.files.map(fileToIndex)
 
           // Find all asset modules associated with the same chunk
           assetModules.forEach((m: any) => {

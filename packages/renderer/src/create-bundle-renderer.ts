@@ -23,7 +23,7 @@ type RenderBundle = {
   modules?: { [filename: string]: string[] };
 };
 export type Renderer = {
-  renderToString: (App: any, props: any) => Promise<string> | string;
+  renderToString: (App: any, props: any) => Promise<[string, string]> | [string, string];
 };
 export type RenderOptions = {
   modules?: { [filename: string]: string[] };
@@ -35,7 +35,7 @@ export type RenderOptions = {
 
 export type context = object;
 export function createBundleRendererCreator(
-  createRenderer: (options?: RenderOptions) => Renderer,
+  frameworks,
 ) {
   return function createBundleRenderer(
     bundle: string | RenderBundle,
@@ -84,7 +84,7 @@ export function createBundleRendererCreator(
       throw new Error(INVALID_MSG)
     }
 
-    const renderer = createRenderer(rendererOptions)
+    // const renderer = createRenderer(rendererOptions)
 
     const run = createBundleRunner(
       entry,
@@ -94,15 +94,20 @@ export function createBundleRendererCreator(
     )
 
     return {
-      renderToString: (context?: context): Promise<string> => {
+      renderToString: (context?: context): Promise<[string, string]> => {
         context = context || {}
+        context.loadedAsync = new Set()
         return run(context)
-          .then((App: any) => {
-            if (App) {
-              return renderer.renderToString(App, context)
-            } else {
-              return Promise.reject(new Error('not App'))
+          .then(({ Head, Main, mainFramework, headFramework }: any) => {
+            if (!Head) {
+              return Promise.reject(new Error('not Head'))
             }
+            if (!Main) {
+              return Promise.reject(new Error('not Main'))
+            }
+            return Promise.resolve()
+              .then(() => frameworks[mainFramework]()(Main, context))
+              .then((res) => Promise.all([res, frameworks[headFramework]()(Head, context)]))
           })
           .catch((err: Error) => {
             rewriteErrorTrace(err, maps)

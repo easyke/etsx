@@ -69,7 +69,7 @@ export abstract class EtsxApp extends EtsxCommon {
     Object.keys(frameworksDefaults).filter((key) => !this.frameworks[key]).forEach((key) => {
       this.frameworks[key] = frameworksDefaults[key]
     })
-    module.paths.unshift('/Users/hua/Documents/Project/cdn/sic-ude/node_modules')
+    // module.paths.unshift('/Users/hua/Documents/Project/cdn/sic-ude/node_modules')
   }
 }
 export default EtsxApp
