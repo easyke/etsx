@@ -1,9 +1,17 @@
 import generateETag from 'etag'
 import fresh from 'fresh'
+import { Etsx, EtsxOptions } from 'etsx'
 import { logger, getContext } from '@etsx/utils'
 import { listener } from '@etsx/listener'
+import { resources, Renderer } from '../renderer';
 
-export default ({ options, etsx, renderRoute, resources }) => async function etsxMiddleware(req: listener.Request, res: listener.Response, next: listener.next) {
+type input = {
+  options: EtsxOptions;
+  etsx: Etsx;
+  resources: resources;
+  renderRoute: Renderer['renderRoute'];
+}
+export default ({ options, etsx, renderRoute, resources }: input) => async function etsxMiddleware(req: listener.Request | any, res: listener.Response | any, next: listener.next) {
   // 生成上下文
   const context = getContext(req, res)
   // 获取渲染路径
@@ -33,9 +41,9 @@ export default ({ options, etsx, renderRoute, resources }) => async function ets
       return html
     }
     if (error) {
-      res.statusCode = context.etsx.error.statusCode || 500
+      // res.statusCode = context.error.statusCode || 500
     }
-
+/*
     // 添加ETag标头
     if (!error && options.render.etag) {
       // 根据内容和和配置选项中的render.etag生成
@@ -79,7 +87,7 @@ export default ({ options, etsx, renderRoute, resources }) => async function ets
 
       res.setHeader(cspHeader, getCspString({ cspScriptSrcHashSet, allowedSources, policies, isDev: options.dev }))
     }
-
+*/
     // 返回响应头
     res.setHeader('Content-Type', 'text/html; charset=utf-8')
     // 不支持 断点续传
