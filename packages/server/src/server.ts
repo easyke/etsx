@@ -50,11 +50,11 @@ export class Server extends EtsxModule {
     /**
      * 渲染路由
      */
-    this.renderRoute = this.renderer.renderRoute.bind(this)
+    this.renderRoute = this.renderer.renderRoute
     /**
      * 加载资源
      */
-    this.loadResources = this.renderer.loadResources.bind(this)
+    this.loadResources = this.renderer.loadResources
   }
   /**
    * 准备就绪

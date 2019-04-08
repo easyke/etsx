@@ -3,6 +3,7 @@ export default class Framework {
     this.framework = f
     this.createElement = f.createElement
     this.Component = f.Component
+    this.render = f.render
   }
   renderToDom (App, props, dom) {
     return Promise.resolve()
