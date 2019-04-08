@@ -3,12 +3,12 @@ import fresh from 'fresh'
 import { Etsx, EtsxOptions } from 'etsx'
 import { logger, getContext } from '@etsx/utils'
 import { listener } from '@etsx/listener'
-import { resources, Renderer } from '../renderer';
+import { renderer, Renderer } from '@etsx/renderer';
 
 type input = {
   options: EtsxOptions;
   etsx: Etsx;
-  resources: resources;
+  resources: renderer.resources;
   renderRoute: Renderer['renderRoute'];
 }
 export default ({ options, etsx, renderRoute, resources }: input) => async function etsxMiddleware(req: listener.Request | any, res: listener.Response | any, next: listener.next) {
