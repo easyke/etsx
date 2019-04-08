@@ -43,7 +43,7 @@ export default ({ options, etsx, renderRoute, resources }: input) => async funct
     if (error) {
       // res.statusCode = context.error.statusCode || 500
     }
-/*
+
     // 添加ETag标头
     if (!error && options.render.etag) {
       // 根据内容和和配置选项中的render.etag生成
@@ -56,7 +56,7 @@ export default ({ options, etsx, renderRoute, resources }: input) => async funct
       }
       res.setHeader('ETag', etag)
     }
-
+/*
     // HTTP2 push headers for preload assets
     // 用于预加载资产的HTTP2推送标头 - 暂时不开发
     if (!error && options.render.http2.push) {

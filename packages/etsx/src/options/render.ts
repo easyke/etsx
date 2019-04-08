@@ -1,6 +1,7 @@
 
 import { getOptions, defaultsDeepClone } from '@etsx/utils'
 import serveStatic from 'serve-static';
+import etag from 'etag'
 
 type servePlaceholderOptions = {
   skipUnknown?: boolean,
@@ -31,6 +32,7 @@ export class Render {
   dist: serveStatic.ServeStaticOptions;
   staticPrefix: boolean;
   compressor: {};
+  etag: etag.Options;
   /**
    * 构造函数
    * @param options 配置选项
@@ -43,6 +45,7 @@ export class Render {
     this.dist = options.dist || {}
     this.static = options.static || {}
     this.compressor = options.compressor || { threshold: 0 }
+    this.etag = defaultsDeepClone<etag.Options>(options.etag, { weak: false })
     this.fallback = {
       dist: {},
       static: defaultsDeepClone<servePlaceholderOptions>((options.fallback && options.fallback.static) || {}, {
