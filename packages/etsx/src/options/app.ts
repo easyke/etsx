@@ -49,8 +49,6 @@ export abstract class EtsxApp extends EtsxCommon {
     this.plugins = Array.isArray(options.plugins) ? options.plugins : []
     this.templates = Array.isArray(options.templates) ? options.templates : []
     this.layouts = Object.assign({}, options.layouts as this['layouts'])
-
-    // module.paths.unshift('/Users/hua/Documents/Project/cdn/sic-ude/node_modules')
   }
 }
 export default EtsxApp
