@@ -252,6 +252,9 @@ export class Server extends EtsxModule {
       } else {
         handler = middleware
       }
+      if (path.substr(0, 2) === '//') {
+        path = path.substr(1)
+      }
       // 使用中间件
       this.app.use(path, handler, method, isWebSocket)
     } catch (err) {

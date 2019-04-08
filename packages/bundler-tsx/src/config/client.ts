@@ -107,7 +107,7 @@ export class ClientWebpackConfig extends BrowserWebpackConfig {
     }
 
     this.plugins.push(new ClientAssetManifestPlugin({
-      filename: `../server/${this.name}.manifest.json`,
+      filename: `../../server/${this.name}.manifest.json`,
     }))
 
     // 加载 模块热重载 配置

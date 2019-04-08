@@ -143,7 +143,7 @@ export const getOutput = (context: BuildContext): webpack.Output => {
     ? options.publicPath
     : urlJoin(options.router.base, options.publicPath)}\/${isWeex ? 'weex' : 'browser'}\/`.replace(/\\/g, '/').replace(/\/\//g, '/');
   return {
-    path: isWeex ? options.dir.dist.weex : path.resolve(options.dir.build, 'dist', isServer ? 'server' : 'client'),
+    path: isWeex ? options.dir.dist.weex : path.resolve(options.dir.build, 'dist', isServer ? 'server' : 'client/browser'),
     filename: getFileName('app', context),
     chunkFilename: getFileName('chunk', context),
     publicPath,
