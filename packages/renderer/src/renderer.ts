@@ -6,7 +6,7 @@ import { sleep, logger, devalue } from '@etsx/utils';
 import Server from '@etsx/server'
 import fs from 'graceful-fs';
 import { TemplateExecutor } from 'lodash';
-import { createBundleRunner, files, entry, userContext } from './create-bundle-runner'
+import { createBundleRunner, files, entry, userContext, runInNewContext } from './create-bundle-runner'
 import { createMapper } from './create-async-file-mapper'
 import { createSourceMapConsumers, rewriteErrorTrace, mapConsumers, rawMaps } from './source-map-support'
 import loadResources from './load-resources'
@@ -212,7 +212,7 @@ export class Renderer extends EtsxModule {
     }
     return this.frameworks[framework]
   }
-  async createEtsxServerRunner(runInNewContext: boolean = false) {
+  async createEtsxServerRunner(runInNewContext: runInNewContext = false) {
     if (!this.resources.serverManifest) {
       throw new Error('not find resources serverManifest');
     }
