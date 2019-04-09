@@ -192,6 +192,7 @@ export const getBabelOptions = (context: BuildContext): { babelrc?: boolean; pre
           isDebug: false,
           isModern: context.isModern,
           buildTarget,
+          loose: context.name === 'client',
         },
       ],
     ]

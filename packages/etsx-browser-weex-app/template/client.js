@@ -1,10 +1,10 @@
-import { loadComponent } from './components/document'
+import { loadComponent } from './load-component'
 import { loadFramework } from './common'
 
 export const createApp = async (context) => {
   const etsx = {}
   const [{ Head, Main }, headFramework, mainFramework] = await Promise.all([
-    loadComponent(context),
+    loadComponent(context, ['Head', 'Main']),
     loadFramework(context, true),
     loadFramework(context, false)
   ])

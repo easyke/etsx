@@ -8,6 +8,7 @@ import TerserWebpackPlugin from 'terser-webpack-plugin'
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 import ClientAssetManifestPlugin from '../plugins/etsx/client'
 
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const es3ifyPlugin = require('es3ify-webpack-plugin')
 
 export class ClientWebpackConfig extends BrowserWebpackConfig {
@@ -104,6 +105,22 @@ export class ClientWebpackConfig extends BrowserWebpackConfig {
     if (!isModern) {
       // 转 es3 支持 ie
       this.plugins.push(new es3ifyPlugin())
+      // UglifyJs3
+      if (!Array.isArray(this.optimization.minimizer)) {
+        this.optimization.minimizer = this.optimization.minimizer ? [this.optimization.minimizer] : []
+      }
+      this.optimization.minimizer.push(new UglifyJsPlugin({
+        parallel: true,
+        uglifyOptions: {
+          ie8: true,
+          output: {
+            comments: false,
+            beautify: false,
+          },
+          warnings: false,
+        },
+        sourceMap: true,
+    }))
     }
 
     this.plugins.push(new ClientAssetManifestPlugin({

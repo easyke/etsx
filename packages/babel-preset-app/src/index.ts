@@ -88,6 +88,7 @@ export default (context: any, options: options = { buildTarget: 'client' }) => {
       modules = 'commonjs'
       targets = { node: 'current' }
     } else {
+      modules = 'commonjs'
       targets = {
         browsers: ['last 2 versions', 'ie >= 7'],
       };
@@ -189,7 +190,12 @@ export default (context: any, options: options = { buildTarget: 'client' }) => {
       },
     ],
 
-    require.resolve('@babel/plugin-transform-modules-commonjs'),
+    [
+      require.resolve('@babel/plugin-transform-modules-commonjs'),
+      {
+        // loose: true,
+      },
+    ],
     require.resolve('@babel/plugin-transform-react-display-name'),
   )
   if (isDev) {
