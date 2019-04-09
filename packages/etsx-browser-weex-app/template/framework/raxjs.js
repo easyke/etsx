@@ -1,10 +1,7 @@
 import Framework from './base'
 import { getDefault } from '../config'
 export default class RaxjsFramework extends Framework {
-  static getFramework (context) {
-    if (context && context.loadedAsync) {
-      context.loadedAsync.add(module.id)
-    }
+  static getFramework () {
     return Promise.all([import('rax'), import('driver-dom')]).then(([f, driver]) => new RaxjsFramework(getDefault(f), getDefault(driver)))
   }
   constructor (framework, driver) {

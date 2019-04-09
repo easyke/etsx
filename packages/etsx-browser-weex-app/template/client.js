@@ -2,11 +2,12 @@ import { loadComponent } from './load-component'
 import { loadFramework } from './common'
 
 export const createApp = async (context) => {
-  const etsx = {}
+  const isWap = context.isWap
+  const etsx = { loadComponent, loadFramework }
   const [{ Head, Main }, headFramework, mainFramework] = await Promise.all([
-    loadComponent(context, ['Head', 'Main']),
-    loadFramework(context, true),
-    loadFramework(context, false)
+    loadComponent(isWap, ['Head', 'Main']),
+    loadFramework(isWap, true),
+    loadFramework(isWap, false)
   ])
 
   etsx.headApp = await headFramework.renderToDom(Head, {}, document.head)
