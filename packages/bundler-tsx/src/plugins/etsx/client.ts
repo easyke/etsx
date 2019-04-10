@@ -67,7 +67,7 @@ export class EtsxSSRClientAssetManifestPlugin {
           if (!chunk || !chunk.files) {
             return
           }
-          const files = assetManifestMap.modules[m.id] = chunk.files.map(fileToIndex)
+          const files = assetManifestMap.modules[m.identifier] = chunk.files.map(fileToIndex)
 
           // Find all asset modules associated with the same chunk
           assetModules.forEach((m: any) => {

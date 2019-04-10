@@ -17,6 +17,9 @@ export type bundle = {
       sourceRoot: string;
     };
   };
+  modules: {
+    [identifier: string]: string | number;
+  };
 };
 export class EtsxSSRServerAssetManifestPlugin {
   filename: string;
@@ -115,10 +118,16 @@ export class EtsxSSRServerAssetManifestPlugin {
         )
       }
 
+      const modules: bundle['modules'] = {}
+      stats.modules.forEach((m: any) => {
+          modules[m.identifier] = m.id
+      })
+
       const bundle: bundle = {
         entry,
         files: {},
         maps: {},
+        modules,
       }
 
       stats.assets.forEach((asset: any) => {
