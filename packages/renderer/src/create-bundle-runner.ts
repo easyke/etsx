@@ -1,7 +1,6 @@
 import vm from 'vm'
 import path from 'path'
 import resolve from 'resolve'
-import cloneDeep from 'lodash/cloneDeep'
 import NativeModule from 'module';
 
 export type userContext = any
