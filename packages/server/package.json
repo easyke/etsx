@@ -1,6 +1,6 @@
 {
   "name": "@etsx/server",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "etsx server",
   "main": "./dist/index.js",
   "types": "./index.d.js",
@@ -15,15 +15,15 @@
     "index.d.ts"
   ],
   "dependencies": {
-    "@etsx/listener": "0.0.2",
-    "@etsx/utils": "0.0.2",
+    "@etsx/listener": "0.0.3",
+    "@etsx/utils": "0.0.3",
     "@nuxtjs/youch": "^4.2.3",
     "@types/etag": "^1.8.0",
     "@types/fresh": "^0.5.0",
     "@types/pify": "^3.0.2",
     "@types/serve-static": "^1.13.2",
-    "compression": "^1.7.4",
     "browserslist-useragent": "^3.0.0",
+    "compression": "^1.7.4",
     "etag": "^1.8.1",
     "fresh": "^0.5.2",
     "launch-editor-middleware": "^2.2.1",

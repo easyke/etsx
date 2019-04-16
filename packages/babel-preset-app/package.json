@@ -1,6 +1,6 @@
 {
   "name": "@etsx/babel-preset-app",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "etsx babel preset app",
   "main": "./index.js",
   "types": "./index.d.js",
