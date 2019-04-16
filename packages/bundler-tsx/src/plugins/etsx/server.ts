@@ -4,10 +4,19 @@ import { getOptions } from '@etsx/utils'
 import uniq from 'lodash/uniq'
 import { RawSource, ConcatSource } from 'webpack-sources'
 export type bundle = {
+  /**
+   * 入口文件
+   */
   entry: string;
+  /**
+   * 打包后所有文件分块
+   */
   files: {
     [fileName: string]: string | Buffer;
   };
+  /**
+   * 地图
+   */
   maps: {
     [fileName: string]: {
       file: string;
@@ -17,6 +26,9 @@ export type bundle = {
       sourceRoot: string;
     };
   };
+  /**
+   * 地址和id的索引
+   */
   modules: {
     [identifier: string]: string | number;
   };

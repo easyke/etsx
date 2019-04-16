@@ -39,7 +39,7 @@ export const defaultPolyfills = [
   // #2012 es6.promise replaces native Promise in FF and causes missing finally
   'es7.promise.finally',
 ]
-export function getPolyfills(targets: targets, includes: polyfills, { ignoreBrowserslistConfig, configPath }: { ignoreBrowserslistConfig: boolean, configPath: configPath }): polyfills {
+export function getPolyfills(targets: targets, corejs: number, includes: polyfills, { ignoreBrowserslistConfig, configPath }: { ignoreBrowserslistConfig: boolean, configPath: configPath }): polyfills {
   const { isPluginRequired } = require('@babel/preset-env')
   const builtInsList = require('@babel/preset-env/data/built-ins.json')
   const getTargets = require('@babel/preset-env/lib/targets-parser').default
@@ -48,7 +48,7 @@ export function getPolyfills(targets: targets, includes: polyfills, { ignoreBrow
     configPath,
   })
 
-  return includes.filter((item) => isPluginRequired(builtInTargets, builtInsList[item]))
+  return includes.filter((item) => isPluginRequired(builtInTargets, builtInsList[item])).map((key) => Number(corejs) === 3 ? key.replace(/es\d./, 'es.') : key)
 }
 
 export default (context: any, options: options = { buildTarget: 'client' }) => {
@@ -62,7 +62,7 @@ export default (context: any, options: options = { buildTarget: 'client' }) => {
     corejs = 3,
     spec,
     loose = false,
-    isDev = false,
+    isDev = process.env.NODE_ENV === "development",
     isDebug = false,
     useBuiltIns = ((isModern || options.buildTarget === 'server') ? false : 'usage'),
     polyfills: userPolyfills,
@@ -97,7 +97,7 @@ export default (context: any, options: options = { buildTarget: 'client' }) => {
 
   let polyfills: polyfills
   if (isModern === false && useBuiltIns === 'usage' && buildTarget === 'client') {
-    polyfills = getPolyfills(targets, userPolyfills || defaultPolyfills, {
+    polyfills = getPolyfills(targets, corejs, userPolyfills || defaultPolyfills, {
       ignoreBrowserslistConfig,
       configPath,
     })
@@ -116,7 +116,7 @@ export default (context: any, options: options = { buildTarget: 'client' }) => {
       useBuiltIns,
       ignoreBrowserslistConfig,
       include,
-      // exclude: polyfills.concat(exclude || []),
+      exclude: polyfills.concat(exclude || []),
       debug: isDebug,
       shippedProposals,
       forceAllTransforms,
