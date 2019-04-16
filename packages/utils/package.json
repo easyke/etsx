@@ -1,6 +1,6 @@
 {
   "name": "@etsx/utils",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "etsx utils",
   "main": "./dist/index.js",
   "types": "./index.d.js",

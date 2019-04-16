@@ -1,6 +1,6 @@
 {
   "name": "@etsx/renderer",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "etsx renderer",
   "main": "./dist/index.js",
   "types": "./index.d.js",
@@ -15,7 +15,7 @@
     "index.d.ts"
   ],
   "dependencies": {
-    "@etsx/utils": "0.0.3",
+    "@etsx/utils": "0.0.4",
     "@types/resolve": "0.0.8",
     "resolve": "1.10.0"
   },
