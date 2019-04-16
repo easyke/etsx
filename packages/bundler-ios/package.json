@@ -1,0 +1,38 @@
+{
+  "name": "@etsx/bundler-ios",
+  "version": "0.0.3",
+  "description": "etsx bundler ios",
+  "main": "./dist/index.js",
+  "types": "./index.d.js",
+  "license": "MIT",
+  "repository": "easyke/etsx.js",
+  "bugs": "https://github.com/easyke/etsx.js/issues",
+  "homepage": "https://etsx.easyke.top",
+  "files": [
+    "src",
+    "dist",
+    "types",
+    "index.d.ts"
+  ],
+  "dependencies": {
+    "@etsx/utils": "0.0.3",
+    "@types/chalk": "^2.2.0",
+    "@types/user-home": "^2.0.0",
+    "chalk": "^2.4.2",
+    "npm-which": "^3.0.1",
+    "user-home": "^2.0.0"
+  },
+  "peerDependencies": {
+    "@etsx/builder": "*",
+    "etsx": "*",
+    "lodash": "^4.17.11",
+    "typescript": "*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">= 8.0.0"
+  },
+  "gitHead": "5e5a8faf5178c3362f3f67f6a31f7884ad41a0cc"
+}

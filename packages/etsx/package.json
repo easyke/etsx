@@ -1,0 +1,37 @@
+{
+  "name": "etsx",
+  "version": "0.0.3",
+  "description": "etsx",
+  "main": "./dist/index.js",
+  "types": "./index.d.js",
+  "license": "MIT",
+  "repository": "easyke/etsx.js",
+  "bugs": "https://github.com/easyke/etsx.js/issues",
+  "homepage": "https://etsx.easyke.top",
+  "files": [
+    "src",
+    "dist",
+    "types",
+    "index.d.ts"
+  ],
+  "dependencies": {
+    "@etsx/server": "0.0.3",
+    "@etsx/utils": "0.0.3",
+    "@types/graceful-fs": "^4.1.3",
+    "esm": "^3.2.18",
+    "graceful-fs": "^4.1.15",
+    "hash-sum": "^1.0.2"
+  },
+  "peerDependencies": {
+    "anujs": "^1.4.9",
+    "rax": "^0.6.7",
+    "typescript": "*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">= 8.0.0"
+  },
+  "gitHead": "5e5a8faf5178c3362f3f67f6a31f7884ad41a0cc"
+}
