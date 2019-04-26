@@ -12,6 +12,7 @@
     "src",
     "dist",
     "types",
+    "index.js",
     "index.d.ts"
   ],
   "dependencies": {
